@@ -11,16 +11,19 @@ def migrate_autor_data(apps, schema_editor):
     User = apps.get_model('auth', 'User')
     
     for artigo in Artigo.objects.all():
-        if artigo.autor_old_id:
+        if hasattr(artigo, 'autor_old') and artigo.autor_old:
             try:
-                user = User.objects.get(id=artigo.autor_old_id)
+                user = User.objects.get(id=artigo.autor_old.id)
                 # Pega o nome completo ou username do usuário
                 autor_name = user.get_full_name() or user.username
                 artigo.autor_new = autor_name
                 artigo.save()
-            except User.DoesNotExist:
+            except (User.DoesNotExist, AttributeError):
                 artigo.autor_new = "Autor Desconhecido"
                 artigo.save()
+        elif not hasattr(artigo, 'autor_new') or not artigo.autor_new:
+            artigo.autor_new = "Equipe Prisma"
+            artigo.save()
 
 
 def reverse_migrate_autor_data(apps, schema_editor):

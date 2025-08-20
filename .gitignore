@@ -1,29 +1,71 @@
-# Django
+# =============================================================================
+# .gitignore para Projeto Django - Prisma Avaliações Imobiliárias
+# =============================================================================
+
+# =============================================================================
+# ARQUIVOS DE AMBIENTE E CONFIGURAÇÃO SENSÍVEL
+# =============================================================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+
+# Arquivos de configuração local
+local_settings.py
+settings_local.py
+config.ini
+
+# =============================================================================
+# DJANGO
+# =============================================================================
 *.log
 *.pot
 *.pyc
 __pycache__/
-local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
 
-# Virtual Environment
+# Cache do Django
+.cache/
+
+# Arquivos de sessão
+django_session
+
+# =============================================================================
+# AMBIENTES VIRTUAIS
+# =============================================================================
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
+.venv/
+.env/
+pyvenv.cfg
+pip-selfcheck.json
 
-# IDE
+# =============================================================================
+# IDEs E EDITORES
+# =============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+*.iws
+*.iml
+*.ipr
 
-# OS
+# =============================================================================
+# SISTEMA OPERACIONAL
+# =============================================================================
 .DS_Store
 .DS_Store?
 ._*
@@ -31,8 +73,14 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Thumbs.db:encryptable
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.stackdump
 
-# Python
+# =============================================================================
+# PYTHON
+# =============================================================================
 *.py[cod]
 *$py.class
 *.so
@@ -55,6 +103,84 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# =============================================================================
+# ARQUIVOS DE BACKUP E TEMPORÁRIOS
+# =============================================================================
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+*.orig
+*.rej
+
+# =============================================================================
+# NODE.JS (se usar npm/yarn para frontend)
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+package-lock.json
+yarn.lock
+
+# =============================================================================
+# JUPYTER NOTEBOOKS
+# =============================================================================
+.ipynb_checkpoints
+
+# =============================================================================
+# FERRAMENTAS DE DESENVOLVIMENTO
+# =============================================================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+celerybeat-schedule
+celerybeat.pid
+.ropeproject
+
+# =============================================================================
+# OUTROS ARQUIVOS ESPECÍFICOS DO PROJETO
+# =============================================================================
+exemplo_dados.json
+teste_dados.sql
+backup_*.sql
+*.dump
+*.sql.gz
+*.json.gz
+error.log
+access.log
+*.pid
+
+# Certificados SSL
+*.pem
+*.key
+*.crt
+*.cert
 
 # Testing
 .tox/
