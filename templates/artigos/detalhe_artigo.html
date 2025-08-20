@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="{{ meta_description }}">
+<meta property="og:title" content="{{ artigo.titulo }}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:type" content="article">
+{% if artigo.imagem_destacada %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{{ artigo.imagem_destacada.url }}">
+{% endif %}
+<meta property="article:author" content="{{ artigo.autor }}">
+<meta property="article:published_time" content="{{ artigo.data_publicacao|date:'c' }}">
+{% for tag in tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav class="bg-light py-3" style="margin-top: 80px;">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'Prisma_avaliacoes:home' %}" class="text-decoration-none">
+                    <i class="fas fa-home me-1"></i>Início
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'artigos:lista' %}" class="text-decoration-none">Blog</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ artigo.titulo|truncatechars:50 }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Artigo Principal -->
+<article class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Conteúdo Principal -->
+            <div class="col-lg-8">
+                <!-- Header do Artigo -->
+                <header class="mb-5">
+                    <!-- Tags -->
+                    {% if tags %}
+                    <div class="mb-3">
+                        {% for tag in tags %}
+                        <a href="{% url 'artigos:por_tag' tag %}" 
+                           class="badge bg-primary text-decoration-none me-2">
+                            {{ tag }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Título -->
+                    <h1 class="display-5 fw-bold text-dark mb-4">{{ artigo.titulo }}</h1>
+                    
+                    <!-- Meta informações -->
+                    <div class="d-flex flex-wrap align-items-center text-muted mb-4">
+                        <div class="me-4 mb-2">
+                            <i class="fas fa-user me-1"></i>
+                            <span>{{ artigo.autor }}</span>
+                        </div>
+                        <div class="me-4 mb-2">
+                            <i class="fas fa-calendar me-1"></i>
+                            <span>{{ artigo.data_publicacao|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="me-4 mb-2">
+                            <i class="fas fa-clock me-1"></i>
+                            <span>{{ artigo.get_tempo_leitura }}</span>
+                        </div>
+                        {% if artigo.data_atualizacao > artigo.data_publicacao %}
+                        <div class="mb-2">
+                            <i class="fas fa-edit me-1"></i>
+                            <span>Atualizado em {{ artigo.data_atualizacao|date:"d/m/Y" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Resumo -->
+                    <div class="lead text-muted mb-4 p-3 bg-light rounded">
+                        {{ artigo.resumo }}
+                    </div>
+                </header>
+                
+                <!-- Imagem Destacada -->
+                {% if artigo.imagem_destacada %}
+                <figure class="mb-5">
+                    <img src="{{ artigo.imagem_destacada.url }}" 
+                         class="img-fluid rounded shadow" 
+                         alt="{{ artigo.titulo }}">
+                </figure>
+                {% endif %}
+                
+                <!-- Conteúdo do Artigo -->
+                <div class="article-content">
+                    {{ artigo.conteudo|linebreaks }}
+                </div>
+                
+                <!-- Compartilhamento -->
+                <div class="border-top pt-4 mt-5">
+                    <h5 class="fw-bold mb-3">Compartilhe este artigo</h5>
+                    <div class="d-flex gap-2">
+                        <a href="https://wa.me/?text={{ artigo.titulo|urlencode }} - {{ request.build_absolute_uri }}" 
+                           target="_blank" 
+                           class="btn btn-success btn-sm">
+                            <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" 
+                           target="_blank" 
+                           class="btn btn-primary btn-sm">
+                            <i class="fab fa-facebook me-1"></i>Facebook
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}" 
+                           target="_blank" 
+                           class="btn btn-info btn-sm">
+                            <i class="fab fa-linkedin me-1"></i>LinkedIn
+                        </a>
+                        <button class="btn btn-secondary btn-sm" onclick="copiarLink()">
+                            <i class="fas fa-link me-1"></i>Copiar Link
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Navegação entre artigos -->
+                {% if artigo_anterior or proximo_artigo %}
+                <nav class="border-top pt-4 mt-5">
+                    <div class="row">
+                        {% if artigo_anterior %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-arrow-left fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Artigo anterior</small>
+                                    <h6 class="mb-0">
+                                        <a href="{{ artigo_anterior.get_absolute_url }}" 
+                                           class="text-decoration-none">
+                                            {{ artigo_anterior.titulo|truncatechars:60 }}
+                                        </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if proximo_artigo %}
+                        <div class="col-md-6 {% if not artigo_anterior %}offset-md-6{% endif %}">
+                            <div class="d-flex align-items-center {% if not artigo_anterior %}justify-content-end{% endif %}">
+                                <div class="{% if not artigo_anterior %}order-2 ms-3{% else %}me-3{% endif %}">
+                                    <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                                </div>
+                                <div class="{% if not artigo_anterior %}order-1 text-end{% endif %}">
+                                    <small class="text-muted">Próximo artigo</small>
+                                    <h6 class="mb-0">
+                                        <a href="{{ proximo_artigo.get_absolute_url }}" 
+                                           class="text-decoration-none">
+                                            {{ proximo_artigo.titulo|truncatechars:60 }}
+                                        </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </nav>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 100px;">
+                    
+                    <!-- Sobre o Autor -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold mb-3">Sobre o autor</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-circle bg-primary text-white me-3">
+                                    {{ artigo.autor.0 }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">{{ artigo.autor }}</h6>
+                                    <small class="text-muted">Especialista em Avaliações</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artigos Relacionados -->
+                    {% if artigos_relacionados %}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold mb-3">Artigos relacionados</h5>
+                            {% for artigo_rel in artigos_relacionados %}
+                            <article class="mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                                <h6 class="mb-2">
+                                    <a href="{{ artigo_rel.get_absolute_url }}" 
+                                       class="text-decoration-none text-dark">
+                                        {{ artigo_rel.titulo|truncatechars:80 }}
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ artigo_rel.data_publicacao|date:"d/m/Y" }}
+                                </small>
+                            </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Call to Action -->
+                    <div class="card border-0 bg-primary text-white mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold mb-3">Precisa de uma avaliação?</h5>
+                            <p class="card-text mb-3">
+                                Entre em contato conosco e receba um orçamento personalizado.
+                            </p>
+                            <a href="{% url 'Prisma_avaliacoes:home' %}#contato" 
+                               class="btn btn-light btn-sm">
+                                <i class="fas fa-phone me-1"></i>Solicitar Orçamento
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Voltar ao Blog -->
+                    <div class="d-grid">
+                        <a href="{% url 'artigos:lista' %}" 
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar ao blog
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Função para copiar link do artigo
+function copiarLink() {
+    const url = window.location.href;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+            // Feedback visual
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i>Copiado!';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-secondary');
+            }, 2000);
+        });
+    } else {
+        // Fallback para navegadores antigos
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        alert('Link copiado para a área de transferência!');
+    }
+}
+
+// Scroll suave para links internos
+document.addEventListener('DOMContentLoaded', function() {
+    // Destaca a seção atual no índice (se houver)
+    const headers = document.querySelectorAll('.article-content h2, .article-content h3');
+    
+    // Adiciona IDs automáticos aos cabeçalhos
+    headers.forEach((header, index) => {
+        if (!header.id) {
+            header.id = `secao-${index + 1}`;
+        }
+    });
+});
+</script>
+{% endblock %}

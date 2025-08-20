@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+
+<!-- Header de Busca -->
+<section class="bg-light py-4" style="margin-top: 80px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'artigos:lista' %}" class="btn btn-outline-primary me-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div class="flex-grow-1">
+                        <h1 class="h3 mb-0">
+                            {% if busca %}
+                                Resultados para "{{ busca }}"
+                            {% else %}
+                                Buscar artigos
+                            {% endif %}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulário de Busca -->
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <form method="GET" action="{% url 'artigos:buscar' %}">
+                    <div class="input-group input-group-lg">
+                        <input type="text" 
+                               class="form-control" 
+                               name="q" 
+                               value="{{ busca }}"
+                               placeholder="Digite palavras-chave..."
+                               minlength="3"
+                               required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </button>
+                    </div>
+                    <small class="text-muted">Digite pelo menos 3 caracteres para buscar</small>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resultados -->
+<section class="py-5">
+    <div class="container">
+        {% if busca %}
+            {% if artigos %}
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-muted mb-4">
+                            {{ artigos|length }} resultado(s) encontrado(s)
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    {% for artigo in artigos %}
+                    <div class="col-lg-6">
+                        <article class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    {% if artigo.imagem_destacada %}
+                                    <div class="me-3 flex-shrink-0">
+                                        <img src="{{ artigo.imagem_destacada.url }}" 
+                                             class="rounded"
+                                             style="width: 80px; height: 80px; object-fit: cover;"
+                                             alt="{{ artigo.titulo }}">
+                                    </div>
+                                    {% else %}
+                                    <div class="me-3 flex-shrink-0 bg-primary rounded d-flex align-items-center justify-content-center" 
+                                         style="width: 80px; height: 80px;">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-2">
+                                            <a href="{{ artigo.get_absolute_url }}" 
+                                               class="text-decoration-none text-dark">
+                                                {{ artigo.titulo }}
+                                            </a>
+                                        </h5>
+                                        
+                                        <p class="card-text text-muted small mb-2">
+                                            {{ artigo.resumo|truncatechars:120 }}
+                                        </p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ artigo.data_publicacao|date:"d/m/Y" }}
+                                            </small>
+                                            
+                                            <a href="{{ artigo.get_absolute_url }}" 
+                                               class="btn btn-primary btn-sm">
+                                                Ler mais
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            {% else %}
+                <!-- Nenhum resultado -->
+                <div class="row">
+                    <div class="col-lg-6 mx-auto text-center py-5">
+                        <i class="fas fa-search fa-5x text-muted mb-4"></i>
+                        <h3 class="fw-bold text-dark mb-3">Nenhum resultado encontrado</h3>
+                        <p class="text-muted mb-4">
+                            Não encontramos artigos para "<strong>{{ busca }}</strong>".<br>
+                            Tente buscar por outros termos ou navegue pelos artigos mais recentes.
+                        </p>
+                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <a href="{% url 'artigos:lista' %}" class="btn btn-primary">
+                                <i class="fas fa-list me-1"></i>Ver todos os artigos
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary" onclick="limparBusca()">
+                                <i class="fas fa-times me-1"></i>Nova busca
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+        {% else %}
+            <!-- Sugestões de busca -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-5x text-primary mb-4"></i>
+                        <h3 class="fw-bold text-dark mb-3">Busque por artigos</h3>
+                        <p class="text-muted mb-4">
+                            Digite palavras-chave relacionadas ao que você procura
+                        </p>
+                        
+                        <!-- Sugestões de busca -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Sugestões populares:</h6>
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
+                                <a href="?q=avaliação" class="badge bg-light text-primary text-decoration-none fs-6 p-2">
+                                    avaliação
+                                </a>
+                                <a href="?q=imóveis" class="badge bg-light text-primary text-decoration-none fs-6 p-2">
+                                    imóveis
+                                </a>
+                                <a href="?q=mercado" class="badge bg-light text-primary text-decoration-none fs-6 p-2">
+                                    mercado
+                                </a>
+                                <a href="?q=laudo" class="badge bg-light text-primary text-decoration-none fs-6 p-2">
+                                    laudo
+                                </a>
+                                <a href="?q=técnico" class="badge bg-light text-primary text-decoration-none fs-6 p-2">
+                                    técnico
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'artigos:lista' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-1"></i>Ver todos os artigos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-focus no campo de busca
+    const searchInput = document.querySelector('input[name="q"]');
+    if (searchInput) {
+        searchInput.focus();
+    }
+    
+    // Busca em tempo real (opcional)
+    let timeoutId;
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            const query = this.value.trim();
+            
+            if (query.length >= 3) {
+                timeoutId = setTimeout(() => {
+                    // Aqui você pode implementar busca AJAX se desejar
+                    console.log('Buscando por:', query);
+                }, 500);
+            }
+        });
+    }
+});
+
+function limparBusca() {
+    const searchInput = document.querySelector('input[name="q"]');
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+    }
+}
+</script>
+{% endblock %}

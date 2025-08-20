@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Seção Hero com Imagem de Fundo Expandida -->
+<!-- Para voltar ao design anterior, troque 'hero-with-image' por 'bg-gradient-primary' 
+     e remova o 'style="background-image: url('/media/home2.jpg');"' -->
+<section id="inicio" class="hero-section hero-with-image text-white py-5" style="background-image: url('/media/home2.jpg');">
+    <!-- Overlay escuro sobre a imagem para melhor legibilidade -->
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    {{ empresa.nome }}
+                </h1>
+                <p class="lead mb-4">
+                    {{ empresa.slogan }}
+                </p>
+                <p class="fs-5 mb-5">
+                    {{ empresa.descricao }}
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <a href="#contato" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-phone me-2"></i>Solicitar Orçamento
+                    </a>
+                    <a href="https://wa.me/55{{ empresa.whatsapp }}" target="_blank" class="btn btn-whatsapp-destaque btn-lg px-4 shadow-lg">
+                        <i class="fab fa-whatsapp me-2 fs-5"></i>WhatsApp Direto
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <!-- Card de destaque com backdrop blur -->
+                <div class="hero-content-overlay bg-white bg-opacity-10 rounded-3 p-4 backdrop-blur">
+                    <i class="fas fa-award fa-4x text-white opacity-90 mb-3"></i>
+                    <h3 class="text-white fw-bold mb-2">Avaliações Profissionais</h3>
+                    <p class="text-white-50 mb-0">Precisão e confiança em cada laudo técnico</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Serviços -->
+<section id="servicos" class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold text-dark mb-4">
+                    Por que escolher a Prisma?
+                </h2>
+                <p class="lead text-muted">
+                    Oferecemos serviços especializados em avaliações imobiliárias com qualidade, agilidade e total confiabilidade
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for servico in servicos %}
+            <div class="col-lg-6 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="icon-circle bg-primary text-white">
+                                    <i class="{{ servico.icone }}"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="card-title fw-bold mb-3">{{ servico.titulo }}</h5>
+                                <p class="card-text text-muted">{{ servico.descricao }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Depoimentos -->
+<section id="depoimentos" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold text-dark mb-4">
+                    O que nossos clientes dizem
+                </h2>
+                <p class="lead text-muted">
+                    Confiança comprovada através da satisfação de nossos clientes
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for depoimento in depoimentos %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= depoimento.estrelas %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="card-text mb-4">"{{ depoimento.texto }}"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle bg-primary text-white me-3">
+                                {{ depoimento.nome|slice:":1" }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ depoimento.nome }}</h6>
+                                <small class="text-muted">{{ depoimento.cargo }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Contato -->
+<section id="contato" class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-5 fw-bold mb-4">
+                    Solicite seu Orçamento
+                </h2>
+                <p class="lead">
+                    Entre em contato conosco e receba uma avaliação profissional do seu imóvel
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="contact-info">
+                    <h4 class="fw-bold mb-4">Informações de Contato</h4>
+                    
+                    <div class="contact-item d-flex align-items-center mb-3">
+                        <div class="icon-circle bg-primary text-white me-3">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">WhatsApp</h6>
+                            <p class="mb-0">(61) 99831-1920</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-center mb-3">
+                        <div class="icon-circle bg-primary text-white me-3">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">E-mail</h6>
+                            <p class="mb-0">{{ empresa.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-center mb-4">
+                        <div class="icon-circle bg-primary text-white me-3">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Localização</h6>
+                            <p class="mb-0">Bahia, Brasil</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-item p-3 rounded-3 bg-gradient bg-primary text-white shadow-sm">
+                                <h3 class="fw-bold mb-0 text-white display-6">500+</h3>
+                                <small class="text-white-50 fw-semibold">Avaliações</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item p-3 rounded-3 bg-gradient bg-success text-white shadow-sm">
+                                <h3 class="fw-bold mb-0 text-white display-6">8+</h3>
+                                <small class="text-white-50 fw-semibold">Anos de Experiência</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item p-3 rounded-3 bg-gradient bg-warning text-dark shadow-sm">
+                                <h3 class="fw-bold mb-0 text-dark display-6">100%</h3>
+                                <small class="text-dark-50 fw-semibold">Satisfação</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="contact-form bg-white rounded-3 p-4">
+                    <h4 class="fw-bold text-dark mb-4">Envie sua Mensagem</h4>
+                    
+                    <form id="contactForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nome" class="form-label text-dark">Nome Completo</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="telefone" class="form-label text-dark">Telefone</label>
+                                <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="email" class="form-label text-dark">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="tipo_imovel" class="form-label text-dark">Tipo de Imóvel</label>
+                                <select class="form-select" id="tipo_imovel" name="tipo_imovel" required>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="residencial">Residencial</option>
+                                    <option value="comercial">Comercial</option>
+                                    <option value="terreno">Terreno</option>
+                                    <option value="apartamento">Apartamento</option>
+                                    <option value="casa">Casa</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="mensagem" class="form-label text-dark">Mensagem</label>
+                                <textarea class="form-control" id="mensagem" name="mensagem" rows="4" 
+                                    placeholder="Descreva seu imóvel e o tipo de avaliação necessária..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fab fa-whatsapp me-2"></i>Enviar via WhatsApp
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-2">Precisa de uma avaliação profissional?</h3>
+                <p class="mb-0 lead">Entre em contato agora e receba seu orçamento personalizado</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="https://wa.me/55{{ empresa.whatsapp }}" target="_blank" class="btn btn-whatsapp-destaque btn-lg px-4">
+                    <i class="fab fa-whatsapp me-2 fs-5"></i>Falar no WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Script para envio do formulário via WhatsApp
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Coleta os dados do formulário
+    const nome = document.getElementById('nome').value;
+    const telefone = document.getElementById('telefone').value;
+    const email = document.getElementById('email').value;
+    const tipoImovel = document.getElementById('tipo_imovel').value;
+    const mensagem = document.getElementById('mensagem').value;
+    
+    // Monta a mensagem para o WhatsApp
+    const whatsappMessage = `
+Olá! Gostaria de solicitar uma avaliação imobiliária.
+
+*Dados do Cliente:*
+• Nome: ${nome}
+• Telefone: ${telefone}
+• E-mail: ${email}
+• Tipo de Imóvel: ${tipoImovel}
+
+*Mensagem:*
+${mensagem}
+
+Enviado através do site da Prisma Avaliações Imobiliárias.
+    `.trim();
+    
+    // Codifica a mensagem para URL
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    
+    // Abre o WhatsApp com a mensagem
+    const whatsappURL = `https://wa.me/55{{ empresa.whatsapp }}?text=${encodedMessage}`;
+    window.open(whatsappURL, '_blank');
+});
+
+// Scroll suave para as seções
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Animação de entrada dos cards
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+        }
+    });
+}, observerOptions);
+
+// Observa todos os cards para animação
+document.querySelectorAll('.card, .hero-section').forEach(el => {
+    observer.observe(el);
+});
+</script>
+
+<style>
+/* Efeito especial para o botão WhatsApp */
+.btn-whatsapp-destaque {
+    background: linear-gradient(45deg, #25d366, #128c7e) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-whatsapp-destaque:hover {
+    background: linear-gradient(45deg, #128c7e, #25d366) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4) !important;
+    color: white !important;
+}
+
+.btn-whatsapp-destaque::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+}
+
+.btn-whatsapp-destaque:hover::before {
+    left: 100%;
+}
+
+/* Animação de pulso suave */
+@keyframes whatsapp-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    }
+}
+
+.btn-whatsapp-destaque {
+    animation: whatsapp-pulse 2s infinite;
+}
+
+/* Efeito especial no ícone */
+.btn-whatsapp-destaque .fab {
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0px);
+    }
+    to {
+        transform: translateY(-3px);
+    }
+}
+
+/* Estilos especiais para estatísticas */
+.stat-item {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.stat-item:hover::before {
+    left: 100%;
+}
+
+/* Animação de contador */
+.stat-item .display-6 {
+    animation: countUp 1s ease-out;
+}
+
+@keyframes countUp {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Cores específicas com gradientes melhorados */
+.stat-item.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+}
+
+.stat-item.bg-success {
+    background: linear-gradient(135deg, #198754, #146c43) !important;
+}
+
+.stat-item.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #ffb000) !important;
+}
+</style>
+
+<script>
+{% endblock %}
