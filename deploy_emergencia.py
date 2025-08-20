@@ -131,7 +131,21 @@ def main():
     executar_comando('python3.10 manage.py migrate --settings=setup.production_settings', 'Executando migrações')
     
     # Passo 5: Coletar arquivos estáticos
+    print("📸 Coletando arquivos estáticos (incluindo imagens)...")
     executar_comando('python3.10 manage.py collectstatic --noinput --settings=setup.production_settings', 'Coletando arquivos estáticos')
+    
+    # Verificar se imagens foram coletadas
+    print("🖼️ Verificando imagens coletadas...")
+    static_img_path = Path('/home/prismaav/prisma_avaliacoes/staticfiles/img')
+    if static_img_path.exists():
+        print("✅ Pasta de imagens criada em staticfiles")
+        img_files = list(static_img_path.glob('*.jpg'))
+        if img_files:
+            print(f"✅ {len(img_files)} imagem(ns) encontrada(s)")
+        else:
+            print("⚠️ Nenhuma imagem encontrada")
+    else:
+        print("⚠️ Pasta staticfiles/img não encontrada")
     
     # Passo 6: Verificar configuração
     if verificar_configuracao():

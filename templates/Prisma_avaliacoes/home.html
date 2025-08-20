@@ -5,8 +5,8 @@
 
 <!-- Seção Hero com Imagem de Fundo Expandida -->
 <!-- Para voltar ao design anterior, troque 'hero-with-image' por 'bg-gradient-primary' 
-     e remova o 'style="background-image: url('/media/home2.jpg');"' -->
-<section id="inicio" class="hero-section hero-with-image text-white py-5" style="background-image: url('/media/home2.jpg');">
+     e remova o 'style="background-image: url('{% static 'img/home2.jpg' %}');"' -->
+<section id="inicio" class="hero-section hero-with-image text-white py-5" style="background-image: url('{% static 'img/home2.jpg' %}');">
     <!-- Overlay escuro sobre a imagem para melhor legibilidade -->
     <div class="hero-overlay"></div>
     <div class="container position-relative">
