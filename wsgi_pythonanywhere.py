@@ -9,7 +9,7 @@ import os
 import sys
 
 # Adicione o caminho do seu projeto
-path = '/home/seuusername/prisma-avaliacoes'  # Substitua 'seuusername' pelo seu username
+path = '/home/prismaav/prisma_avaliacoes'  # Caminho correto no PythonAnywhere
 if path not in sys.path:
     sys.path.insert(0, path)
 

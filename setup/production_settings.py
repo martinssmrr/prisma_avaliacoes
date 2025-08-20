@@ -8,9 +8,9 @@ import os
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Hosts permitidos - substitua pelo seu domínio do PythonAnywhere
+# Hosts permitidos - PythonAnywhere
 ALLOWED_HOSTS = [
-    'seuusername.pythonanywhere.com',  # Substitua 'seuusername' pelo seu username
+    'prismaav.pythonanywhere.com',  # Host do PythonAnywhere
     'localhost',
     '127.0.0.1',
 ]
