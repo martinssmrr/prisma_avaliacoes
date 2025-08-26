@@ -29,8 +29,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{% url 'Prisma_avaliacoes:home' %}">
-                <i class="fas fa-gem me-2"></i>Prisma Avaliações
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="{% url 'Prisma_avaliacoes:home' %}">
+                <img src="{% static 'img/logo1.png' %}" alt="Prisma Avaliações" height="60" class="me-2">
+                Prisma Avaliações
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -74,9 +75,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <h5 class="fw-bold mb-3">
-                        <i class="fas fa-gem me-2"></i>Prisma Avaliações
-                    </h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'img/logo1.png' %}" alt="Prisma Avaliações" height="70" class="me-3">
+                        <h5 class="fw-bold mb-0">Prisma Avaliações</h5>
+                    </div>
                     <p class="text-light">
                         Especialistas em avaliações imobiliárias com precisão, agilidade e confiabilidade comprovada no mercado brasileiro.
                     </p>
