@@ -85,11 +85,24 @@ class Artigo(models.Model):
         help_text="Descrição para SEO (máximo 160 caracteres)"
     )
     
+    meta_keywords = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Palavras-chave",
+        help_text="Palavras-chave separadas por vírgula para SEO"
+    )
+    
     tags = models.CharField(
         max_length=200,
         blank=True,
         verbose_name="Tags",
         help_text="Tags separadas por vírgula (ex: avaliação, imóveis, mercado)"
+    )
+    
+    canonical_url = models.URLField(
+        blank=True,
+        verbose_name="URL canônica",
+        help_text="URL canônica se diferente da padrão (opcional)"
     )
     
     class Meta:

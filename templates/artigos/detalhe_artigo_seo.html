@@ -1,0 +1,798 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ artigo.titulo }} | Blog Prisma Avaliações{% endblock %}
+
+{% block extra_head %}
+<!-- Meta Tags Básicas -->
+<meta name="description" content="{{ meta_description }}">
+<meta name="keywords" content="{{ meta_keywords }}">
+<meta name="author" content="{{ artigo.autor }}">
+<meta name="robots" content="index, follow">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ canonical_url }}">
+
+<!-- Open Graph (Facebook) -->
+<meta property="og:title" content="{{ artigo.titulo }}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:site_name" content="Prisma Avaliações Imobiliárias">
+<meta property="og:locale" content="pt_BR">
+{% if artigo.imagem_destacada %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{{ artigo.imagem_destacada.url }}">
+<meta property="og:image:alt" content="{{ artigo.titulo }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{% endif %}
+
+<!-- Open Graph Article -->
+<meta property="article:author" content="{{ artigo.autor }}">
+<meta property="article:published_time" content="{{ artigo.data_publicacao|date:'c' }}">
+<meta property="article:modified_time" content="{{ artigo.data_atualizacao|date:'c' }}">
+<meta property="article:section" content="Avaliações Imobiliárias">
+{% for tag in tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ artigo.titulo }}">
+<meta name="twitter:description" content="{{ meta_description }}">
+{% if artigo.imagem_destacada %}
+<meta name="twitter:image" content="{{ request.build_absolute_uri }}{{ artigo.imagem_destacada.url }}">
+<meta name="twitter:image:alt" content="{{ artigo.titulo }}">
+{% endif %}
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ artigo.titulo|escapejs }}",
+  "description": "{{ meta_description|escapejs }}",
+  "image": {% if artigo.imagem_destacada %}"{{ request.build_absolute_uri }}{{ artigo.imagem_destacada.url }}"{% else %}null{% endif %},
+  "author": {
+    "@type": "Person",
+    "name": "{{ artigo.autor|escapejs }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Prisma Avaliações Imobiliárias",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ request.build_absolute_uri }}{% static 'images/logo.png' %}"
+    }
+  },
+  "datePublished": "{{ artigo.data_publicacao|date:'c' }}",
+  "dateModified": "{{ artigo.data_atualizacao|date:'c' }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ canonical_url }}"
+  },
+  "url": "{{ canonical_url }}",
+  "keywords": "{{ meta_keywords|escapejs }}",
+  "articleSection": "Avaliações Imobiliárias",
+  "wordCount": {{ word_count }},
+  "inLanguage": "pt-BR"
+}
+</script>
+
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Início",
+      "item": "{{ request.build_absolute_uri }}{% url 'Prisma_avaliacoes:home' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "{{ request.build_absolute_uri }}{% url 'artigos:lista' %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ artigo.titulo|escapejs }}",
+      "item": "{{ canonical_url }}"
+    }
+  ]
+}
+</script>
+
+<!-- Preload Critical Resources -->
+{% if artigo.imagem_destacada %}
+<link rel="preload" as="image" href="{{ artigo.imagem_destacada.url }}">
+{% endif %}
+
+<!-- CSS Específico do Artigo -->
+<style>
+  /* Estilos para artigos otimizados */
+  .article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #2c3e50;
+  }
+  
+  .article-content h2,
+  .article-content h3,
+  .article-content h4 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #1a202c;
+  }
+  
+  .article-content h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 0.5rem;
+  }
+  
+  .article-content h3 {
+    font-size: 1.5rem;
+  }
+  
+  .article-content h4 {
+    font-size: 1.3rem;
+  }
+  
+  .article-content p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+  }
+  
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+  }
+  
+  .article-content blockquote {
+    border-left: 4px solid #007cba;
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    background-color: #f8f9fa;
+    padding: 1rem 1rem 1rem 1.5rem;
+    border-radius: 0 4px 4px 0;
+  }
+  
+  .article-content ul,
+  .article-content ol {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+  }
+  
+  .article-content li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .table-of-contents {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .table-of-contents ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+  
+  .table-of-contents a {
+    text-decoration: none;
+    color: #007cba;
+    font-weight: 500;
+  }
+  
+  .table-of-contents a:hover {
+    text-decoration: underline;
+  }
+  
+  .social-share-buttons {
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+  }
+  
+  .share-button {
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .share-button:hover {
+    transform: scale(1.1);
+    color: white;
+  }
+  
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(to right, #007cba, #0056b3);
+    z-index: 9999;
+    transition: width 0.1s ease;
+  }
+  
+  .estimated-reading-time {
+    background: linear-gradient(135deg, #007cba, #0056b3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 991px) {
+    .social-share-buttons {
+      position: static;
+      transform: none;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 2rem 0;
+    }
+    
+    .share-button {
+      margin-bottom: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Barra de Progresso de Leitura -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Breadcrumb Semântico -->
+<nav class="bg-light py-3" style="margin-top: 80px;" aria-label="Breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb mb-0" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{% url 'Prisma_avaliacoes:home' %}" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name"><i class="fas fa-home me-1"></i>Início</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{% url 'artigos:lista' %}" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Blog</span>
+                </a>
+                <meta itemprop="position" content="2" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">{{ artigo.titulo|truncatechars:50 }}</span>
+                <meta itemprop="position" content="3" />
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Artigo Principal -->
+<main>
+    <article class="py-5" itemscope itemtype="https://schema.org/Article">
+        <div class="container">
+            <div class="row position-relative">
+                
+                <!-- Botões de Compartilhamento Lateral -->
+                <div class="col-1 d-none d-lg-block">
+                    <div class="social-share-buttons">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url|urlencode }}" 
+                           target="_blank" 
+                           class="share-button"
+                           style="background-color: #1877f2;"
+                           aria-label="Compartilhar no Facebook"
+                           rel="noopener">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://wa.me/?text={{ artigo.titulo|urlencode }}%20-%20{{ canonical_url|urlencode }}" 
+                           target="_blank" 
+                           class="share-button"
+                           style="background-color: #25d366;"
+                           aria-label="Compartilhar no WhatsApp"
+                           rel="noopener">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ canonical_url|urlencode }}" 
+                           target="_blank" 
+                           class="share-button"
+                           style="background-color: #0077b5;"
+                           aria-label="Compartilhar no LinkedIn"
+                           rel="noopener">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ artigo.titulo|urlencode }}&url={{ canonical_url|urlencode }}" 
+                           target="_blank" 
+                           class="share-button"
+                           style="background-color: #1da1f2;"
+                           aria-label="Compartilhar no Twitter"
+                           rel="noopener">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <button onclick="copyToClipboard('{{ canonical_url }}')" 
+                                class="share-button"
+                                style="background-color: #6c757d; border: none;"
+                                aria-label="Copiar link do artigo">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Conteúdo Principal -->
+                <div class="col-lg-8 offset-lg-1">
+                    <!-- Header do Artigo -->
+                    <header class="mb-5">
+                        <!-- Tags -->
+                        {% if tags %}
+                        <div class="mb-3">
+                            {% for tag in tags %}
+                            <a href="{% url 'artigos:por_tag' tag %}" 
+                               class="badge bg-primary text-decoration-none me-2"
+                               rel="tag">
+                                {{ tag }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Título Principal -->
+                        <h1 class="display-5 fw-bold text-dark mb-4" itemprop="headline">
+                            {{ artigo.titulo }}
+                        </h1>
+                        
+                        <!-- Meta informações do artigo -->
+                        <div class="d-flex flex-wrap align-items-center text-muted mb-4">
+                            <div class="me-4 mb-2">
+                                <i class="fas fa-user me-1"></i>
+                                <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                                    <span itemprop="name">{{ artigo.autor }}</span>
+                                </span>
+                            </div>
+                            <div class="me-4 mb-2">
+                                <i class="fas fa-calendar me-1"></i>
+                                <time itemprop="datePublished" datetime="{{ artigo.data_publicacao|date:'c' }}">
+                                    {{ artigo.data_publicacao|date:"d/m/Y" }}
+                                </time>
+                            </div>
+                            <div class="me-4 mb-2">
+                                <i class="fas fa-clock me-1"></i>
+                                <span class="estimated-reading-time">
+                                    {{ reading_time }} min de leitura
+                                </span>
+                            </div>
+                            {% if artigo.data_atualizacao > artigo.data_publicacao %}
+                            <div class="mb-2">
+                                <i class="fas fa-edit me-1"></i>
+                                <span>Atualizado em </span>
+                                <time itemprop="dateModified" datetime="{{ artigo.data_atualizacao|date:'c' }}">
+                                    {{ artigo.data_atualizacao|date:"d/m/Y" }}
+                                </time>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Resumo do Artigo -->
+                        <div class="lead text-muted mb-4 p-4 bg-light rounded" itemprop="description">
+                            {{ artigo.resumo }}
+                        </div>
+                    </header>
+                    
+                    <!-- Imagem Destacada -->
+                    {% if artigo.imagem_destacada %}
+                    <figure class="mb-5" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+                        <img src="{{ artigo.imagem_destacada.url }}" 
+                             class="img-fluid rounded shadow" 
+                             alt="{{ artigo.titulo }}"
+                             itemprop="url"
+                             loading="lazy">
+                        <meta itemprop="width" content="800">
+                        <meta itemprop="height" content="400">
+                    </figure>
+                    {% endif %}
+                    
+                    <!-- Sumário Automático -->
+                    {% if table_of_contents %}
+                    <aside class="table-of-contents" id="table-of-contents">
+                        <h3 class="h5 fw-bold mb-3">
+                            <i class="fas fa-list me-2"></i>Índice do Artigo
+                        </h3>
+                        <nav role="navigation" aria-labelledby="table-of-contents">
+                            {{ table_of_contents|safe }}
+                        </nav>
+                    </aside>
+                    {% endif %}
+                    
+                    <!-- Conteúdo do Artigo -->
+                    <section class="article-content" itemprop="articleBody">
+                        {{ processed_content|safe }}
+                    </section>
+                    
+                    <!-- Meta dados escondidos para Schema -->
+                    <meta itemprop="wordCount" content="{{ word_count }}">
+                    <meta itemprop="url" content="{{ canonical_url }}">
+                    <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization" style="display: none;">
+                        <span itemprop="name">Prisma Avaliações Imobiliárias</span>
+                        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+                            <meta itemprop="url" content="{{ request.build_absolute_uri }}{% static 'images/logo.png' %}">
+                        </div>
+                    </div>
+                    
+                    <!-- Compartilhamento Mobile -->
+                    <div class="d-lg-none">
+                        <div class="border-top pt-4 mt-5">
+                            <h5 class="fw-bold mb-3">Compartilhe este artigo</h5>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="https://wa.me/?text={{ artigo.titulo|urlencode }}%20-%20{{ canonical_url|urlencode }}" 
+                                   target="_blank" 
+                                   class="btn btn-success btn-sm"
+                                   rel="noopener">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url|urlencode }}" 
+                                   target="_blank" 
+                                   class="btn btn-primary btn-sm"
+                                   rel="noopener">
+                                    <i class="fab fa-facebook me-1"></i>Facebook
+                                </a>
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ canonical_url|urlencode }}" 
+                                   target="_blank" 
+                                   class="btn btn-info btn-sm"
+                                   rel="noopener">
+                                    <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                </a>
+                                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('{{ canonical_url }}')">
+                                    <i class="fas fa-link me-1"></i>Copiar Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navegação entre artigos -->
+                    {% if artigo_anterior or proximo_artigo %}
+                    <nav class="border-top pt-4 mt-5" aria-label="Navegação entre artigos">
+                        <div class="row">
+                            {% if artigo_anterior %}
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-arrow-left fa-2x text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Artigo anterior</small>
+                                        <h6 class="mb-0">
+                                            <a href="{{ artigo_anterior.get_absolute_url }}" 
+                                               class="text-decoration-none"
+                                               rel="prev">
+                                                {{ artigo_anterior.titulo|truncatechars:60 }}
+                                            </a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if proximo_artigo %}
+                            <div class="col-md-6 {% if not artigo_anterior %}offset-md-6{% endif %}">
+                                <div class="d-flex align-items-center {% if not artigo_anterior %}justify-content-end{% endif %}">
+                                    <div class="{% if not artigo_anterior %}order-2 ms-3{% else %}me-3{% endif %}">
+                                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="{% if not artigo_anterior %}order-1 text-end{% endif %}">
+                                        <small class="text-muted">Próximo artigo</small>
+                                        <h6 class="mb-0">
+                                            <a href="{{ proximo_artigo.get_absolute_url }}" 
+                                               class="text-decoration-none"
+                                               rel="next">
+                                                {{ proximo_artigo.titulo|truncatechars:60 }}
+                                            </a>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </nav>
+                    {% endif %}
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <aside class="sticky-top" style="top: 100px;">
+                        
+                        <!-- Artigos Relacionados -->
+                        {% if artigos_relacionados %}
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-bookmark me-2"></i>Artigos Relacionados
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% for artigo_rel in artigos_relacionados %}
+                                <article class="mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                                    <h6 class="mb-2">
+                                        <a href="{{ artigo_rel.get_absolute_url }}" 
+                                           class="text-decoration-none text-dark"
+                                           rel="related">
+                                            {{ artigo_rel.titulo|truncatechars:80 }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ artigo_rel.data_publicacao|date:"d/m/Y" }}
+                                    </small>
+                                </article>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Call to Action -->
+                        <div class="card border-0 bg-primary text-white mb-4">
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold mb-3">Precisa de uma avaliação?</h5>
+                                <p class="card-text mb-3">
+                                    Entre em contato conosco e receba um orçamento personalizado.
+                                </p>
+                                <a href="{% url 'Prisma_avaliacoes:home' %}#contato" 
+                                   class="btn btn-light btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Solicitar Orçamento
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Voltar ao Blog -->
+                        <div class="d-grid">
+                            <a href="{% url 'artigos:lista' %}" 
+                               class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Voltar ao blog
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Barra de progresso de leitura
+function updateReadingProgress() {
+    const article = document.querySelector('article');
+    const progressBar = document.getElementById('reading-progress');
+    
+    if (article && progressBar) {
+        const articleTop = article.offsetTop;
+        const articleHeight = article.offsetHeight;
+        const windowTop = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        
+        const progress = Math.min(100, Math.max(0, 
+            ((windowTop - articleTop + windowHeight) / articleHeight) * 100
+        ));
+        
+        progressBar.style.width = progress + '%';
+    }
+}
+
+// Geração automática de sumário
+function generateTableOfContents() {
+    const content = document.querySelector('.article-content');
+    const tocContainer = document.getElementById('table-of-contents');
+    
+    if (!content || !tocContainer) return;
+    
+    const headings = content.querySelectorAll('h2, h3, h4');
+    if (headings.length === 0) {
+        tocContainer.style.display = 'none';
+        return;
+    }
+    
+    let tocHTML = '<ul>';
+    let lastLevel = 2;
+    
+    headings.forEach((heading, index) => {
+        const level = parseInt(heading.tagName.charAt(1));
+        const id = `heading-${index + 1}`;
+        heading.id = id;
+        
+        if (level > lastLevel) {
+            tocHTML += '<ul>';
+        } else if (level < lastLevel) {
+            tocHTML += '</ul>';
+        }
+        
+        tocHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+        lastLevel = level;
+    });
+    
+    tocHTML += '</ul>';
+    
+    const nav = tocContainer.querySelector('nav');
+    if (nav) {
+        nav.innerHTML = tocHTML;
+    }
+}
+
+// Smooth scroll para links âncora
+function setupSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Função para copiar link
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+            showToast('Link copiado para a área de transferência!');
+        }).catch(function() {
+            fallbackCopyTextToClipboard(text);
+        });
+    } else {
+        fallbackCopyTextToClipboard(text);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showToast('Link copiado para a área de transferência!');
+    } catch (err) {
+        showToast('Erro ao copiar link. Tente novamente.');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Função para mostrar toast
+function showToast(message) {
+    // Criar elemento de toast
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    toast.textContent = message;
+    
+    // Adicionar animação CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // Remover após 3 segundos
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Lazy loading para imagens
+function setupLazyLoading() {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    updateReadingProgress();
+    generateTableOfContents();
+    setupSmoothScroll();
+    setupLazyLoading();
+    
+    // Event listeners
+    window.addEventListener('scroll', updateReadingProgress);
+    window.addEventListener('resize', updateReadingProgress);
+});
+
+// Analytics de engajamento (opcional)
+function trackEngagement() {
+    let maxScroll = 0;
+    let timeOnPage = Date.now();
+    
+    window.addEventListener('scroll', () => {
+        const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+        maxScroll = Math.max(maxScroll, scrollPercent);
+    });
+    
+    window.addEventListener('beforeunload', () => {
+        const timeSpent = Math.round((Date.now() - timeOnPage) / 1000);
+        
+        // Aqui você pode enviar dados para Google Analytics ou outro serviço
+        console.log('Engagement:', {
+            maxScroll: maxScroll,
+            timeSpent: timeSpent,
+            article: '{{ artigo.slug }}'
+        });
+    });
+}
+
+// Inicializar analytics
+trackEngagement();
+</script>
+{% endblock %}

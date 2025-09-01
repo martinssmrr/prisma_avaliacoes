@@ -33,14 +33,17 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='prismaav.pythonanywhere.com,loc
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",  # Deve ser o primeiro para funcionar corretamente
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",  # Framework para sitemap
     "Prisma_avaliacoes",
     "artigos",
+    "controle",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +142,104 @@ MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Configurações do Django Jazzmin
+JAZZMIN_SETTINGS = {
+    # Nome do site
+    "site_title": "Prisma Avaliações",
+    "site_header": "Prisma Avaliações",
+    "site_brand": "Dashboard",
+    "site_logo": "images/logo_pequena.png",
+    "login_logo": "images/logo.png",
+    
+    # Copyright
+    "copyright": "Prisma Avaliações Imobiliárias",
+    
+    # Pesquisa no topo
+    "search_model": ["controle.Cliente", "controle.Venda"],
+    
+    # Ícones do menu
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "controle.Cliente": "fas fa-user-friends",
+        "controle.Venda": "fas fa-handshake",
+        "artigos.Artigo": "fas fa-newspaper",
+        "Prisma_avaliacoes": "fas fa-home",
+    },
+    
+    # Menu personalizado
+    "topmenu_links": [
+        {"name": "Início", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Dashboard Vendas", "url": "admin:controle_dashboard", "permissions": ["controle.view_venda"]},
+        {"name": "Ver Site", "url": "/", "new_window": True},
+    ],
+    
+    # Ordem dos apps no menu
+    "order_with_respect_to": ["controle", "artigos", "auth"],
+    
+    # Ocultar modelos
+    "hide_models": ["auth.Group"],
+    
+    # Links relacionados
+    "related_modal_active": True,
+    
+    # Customização da interface
+    "custom_css": None,
+    "custom_js": None,
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    
+    # Rodapé
+    "show_ui_builder": False,
+    
+    # Tema
+    "theme": "flatly",  # cerulean, cosmo, cyborg, darkly, flatly, journal, litera, lumen, lux, materia, minty, pulse, sandstone, simplex, sketchy, slate, solar, spacelab, superhero, united, yeti
+    
+    # Modo escuro
+    "dark_mode_theme": "darkly",
+    
+    # Sidebar personalizada
+    "custom_links": {
+        "controle": [{
+            "name": "Dashboard Vendas",
+            "url": "admin:controle_dashboard",
+            "icon": "fas fa-chart-line",
+        }]
+    }
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}

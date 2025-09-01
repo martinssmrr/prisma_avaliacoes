@@ -19,11 +19,24 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.http import HttpResponse
+from artigos.sitemaps import ArtigoSitemap, StaticPagesSitemap
+
+# Configuração dos sitemaps
+sitemaps = {
+    'artigos': ArtigoSitemap,
+    'static': StaticPagesSitemap,
+}
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("Prisma_avaliacoes.urls")),
     path("blog/", include("artigos.urls")),
+    
+    # SEO URLs
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: {}/sitemap.xml".format(r.build_absolute_uri('/')[:-1]), content_type="text/plain")),
 ]
 
 # Servir arquivos de media em desenvolvimento
