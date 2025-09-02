@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Área do Cliente - Prisma Avaliações{% endblock %}</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==">
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    {% if user.is_authenticated %}
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-home text-2xl"></i>
+                    <div>
+                        <h1 class="text-xl font-bold">Área do Cliente</h1>
+                        <p class="text-sm opacity-80">Prisma Avaliações Imobiliárias</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="font-semibold">{{ cliente.nome }}</p>
+                        <p class="text-sm opacity-80">{{ cliente.telefone }}</p>
+                    </div>
+                    <a href="/" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg transition-colors" title="Voltar ao site principal">
+                        <i class="fas fa-globe mr-2"></i>Home
+                    </a>
+                    <a href="{% url 'area_cliente:logout' %}" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex space-x-1 overflow-x-auto">
+                <a href="{% url 'area_cliente:dashboard' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} px-4 py-3 whitespace-nowrap">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                <a href="{% url 'area_cliente:minhas_compras' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'minhas_compras' %}active{% endif %} px-4 py-3 whitespace-nowrap">
+                    <i class="fas fa-shopping-cart mr-2"></i>Minhas Compras
+                </a>
+                <a href="{% url 'area_cliente:trocar_senha' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'trocar_senha' %}active{% endif %} px-4 py-3 whitespace-nowrap">
+                    <i class="fas fa-key mr-2"></i>Trocar Senha
+                </a>
+                <a href="{% url 'area_cliente:suporte' %}" 
+                   class="nav-link {% if request.resolver_match.url_name == 'suporte' %}active{% endif %} px-4 py-3 whitespace-nowrap">
+                    <i class="fas fa-life-ring mr-2"></i>Suporte
+                </a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mx-auto px-4 pt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-4 p-4 rounded-lg border-l-4 {% if message.tags == 'error' %}bg-red-50 border-red-500 text-red-700{% elif message.tags == 'success' %}bg-green-50 border-green-500 text-green-700{% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-500 text-yellow-700{% else %}bg-blue-50 border-blue-500 text-blue-700{% endif %}">
+            <div class="flex items-center">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} mr-2"></i>
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold mb-2">Prisma Avaliações Imobiliárias</h3>
+                <p class="text-gray-400">Especialistas em avaliações de imóveis no Brasil</p>
+            </div>
+            
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="tel:+5561998311920" class="hover:text-blue-400 transition-colors">
+                    <i class="fas fa-phone mr-2"></i>(61) 99831-1920
+                </a>
+                <a href="mailto:contato@prismaavaliacoes.com.br" class="hover:text-blue-400 transition-colors">
+                    <i class="fas fa-envelope mr-2"></i>contato@prismaavaliacoes.com.br
+                </a>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-4">
+                <p class="text-sm text-gray-400">
+                    &copy; {{ current_year|default:"2025" }} Prisma Avaliações. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Auto-hide alerts após 5 segundos
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

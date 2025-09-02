@@ -1,0 +1,238 @@
+{% extends 'area_cliente/base.html' %}
+
+{% block title %}Suporte - Área do Cliente - Prisma Avaliações{% endblock %}
+
+{% block content %}
+<!-- Cabeçalho da Página -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-life-ring mr-3"></i>Suporte ao Cliente
+    </h1>
+    <p class="text-gray-600">Precisa de ajuda? Entre em contato conosco</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Formulário de Contato -->
+    <div class="bg-white rounded-lg card-shadow p-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-envelope mr-2"></i>Enviar Mensagem
+        </h2>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Assunto -->
+            <div>
+                <label for="assunto" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tag mr-1"></i>Assunto *
+                </label>
+                <select id="assunto" name="assunto" required 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                    <option value="">Selecione o assunto</option>
+                    <option value="Dúvida sobre minha compra">Dúvida sobre minha compra</option>
+                    <option value="Problema de acesso">Problema de acesso</option>
+                    <option value="Pagamento">Questões de pagamento</option>
+                    <option value="Documento">Problemas com documento</option>
+                    <option value="Atualização de dados">Atualização de dados</option>
+                    <option value="Reclamação">Reclamação</option>
+                    <option value="Sugestão">Sugestão</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+
+            <!-- Mensagem -->
+            <div>
+                <label for="mensagem" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-comment mr-1"></i>Mensagem *
+                </label>
+                <textarea id="mensagem" name="mensagem" rows="6" required
+                          placeholder="Descreva sua dúvida ou problema com detalhes..."
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+                <p class="text-xs text-gray-500 mt-1">Máximo 1000 caracteres</p>
+            </div>
+
+            <!-- Informações do Cliente (readonly) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user mr-1"></i>Nome
+                    </label>
+                    <input type="text" value="{{ cliente.nome }}" readonly
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-phone mr-1"></i>Telefone
+                    </label>
+                    <input type="text" value="{{ cliente.telefone }}" readonly
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
+                </div>
+            </div>
+
+            <!-- Botão de Envio -->
+            <button type="submit" 
+                    class="w-full btn-primary text-white py-3 px-6 rounded-lg font-medium transition-all">
+                <i class="fas fa-paper-plane mr-2"></i>Enviar Mensagem
+            </button>
+        </form>
+    </div>
+
+    <!-- Informações de Contato -->
+    <div class="space-y-6">
+        <!-- Contatos Diretos -->
+        <div class="bg-white rounded-lg card-shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                <i class="fas fa-phone mr-2"></i>Contatos Diretos
+            </h3>
+            
+            <div class="space-y-4">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/5561998311920" target="_blank" 
+                   class="flex items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200">
+                    <div class="bg-green-500 p-3 rounded-full mr-4">
+                        <i class="fab fa-whatsapp text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800">WhatsApp</p>
+                        <p class="text-sm text-gray-600">(61) 99831-1920</p>
+                        <p class="text-xs text-green-600">Resposta mais rápida</p>
+                    </div>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:suporte@prismaav.com.br" 
+                   class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-200">
+                    <div class="bg-blue-500 p-3 rounded-full mr-4">
+                        <i class="fas fa-envelope text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800">Email</p>
+                        <p class="text-sm text-gray-600">contato@prismaavaliacoes.com.br</p>
+                        <p class="text-xs text-blue-600">Resposta em até 24h</p>
+                    </div>
+                </a>
+
+                <!-- Telefone -->
+                <!-- <a href="tel:+551130001234" 
+                   class="flex items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors border border-purple-200">
+                    <div class="bg-purple-500 p-3 rounded-full mr-4">
+                        <i class="fas fa-phone text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800">Telefone</p>
+                        <p class="text-sm text-gray-600">(11) 3000-1234</p>
+                        <p class="text-xs text-purple-600">Seg à Sex: 8h às 18h</p>
+                    </div>
+                </a> -->
+            </div>
+        </div>
+
+        <!-- Horário de Atendimento -->
+        <div class="bg-white rounded-lg card-shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                <i class="fas fa-clock mr-2"></i>Horário de Atendimento
+            </h3>
+            
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Segunda à Sexta</span>
+                    <span class="font-semibold text-gray-800">8h às 18h</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Sábado</span>
+                    <span class="font-semibold text-gray-800">8h às 12h</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Domingo</span>
+                    <span class="text-gray-500">Fechado</span>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p class="text-sm text-yellow-800">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <strong>WhatsApp:</strong> Disponível 24h para emergências
+                </p>
+            </div>
+        </div>
+
+        <!-- FAQ Rápido -->
+        <div class="bg-white rounded-lg card-shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                <i class="fas fa-question-circle mr-2"></i>Dúvidas Frequentes
+            </h3>
+            
+            <div class="space-y-4">
+                <details class="border border-gray-200 rounded-lg p-3">
+                    <summary class="cursor-pointer font-medium text-gray-800 hover:text-blue-600">
+                        Como acompanho o progresso da minha compra?
+                    </summary>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Acesse "Minhas Compras" no menu principal. Lá você verá todas as etapas e o progresso em tempo real.
+                    </p>
+                </details>
+                
+                <details class="border border-gray-200 rounded-lg p-3">
+                    <summary class="cursor-pointer font-medium text-gray-800 hover:text-blue-600">
+                        Quando posso baixar meu documento?
+                    </summary>
+                    <p class="text-sm text-gray-600 mt-2">
+                        O documento fica disponível após a etapa de confecção e pagamento do 2º sinal.
+                    </p>
+                </details>
+                
+                <details class="border border-gray-200 rounded-lg p-3">
+                    <summary class="cursor-pointer font-medium text-gray-800 hover:text-blue-600">
+                        Esqueci minha senha, o que fazer?
+                    </summary>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Entre em contato pelo WhatsApp ou email. Nossa equipe redefinirá sua senha rapidamente.
+                    </p>
+                </details>
+                
+                <details class="border border-gray-200 rounded-lg p-3">
+                    <summary class="cursor-pointer font-medium text-gray-800 hover:text-blue-600">
+                        Como altero meus dados pessoais?
+                    </summary>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Entre em contato conosco informando os novos dados. Atualizaremos em nosso sistema.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Contador de caracteres para mensagem
+    const mensagemField = document.getElementById('mensagem');
+    const maxChars = 1000;
+    
+    mensagemField.addEventListener('input', function() {
+        const current = this.value.length;
+        const remaining = maxChars - current;
+        
+        let counterElement = document.getElementById('char-counter');
+        if (!counterElement) {
+            counterElement = document.createElement('p');
+            counterElement.id = 'char-counter';
+            counterElement.className = 'text-xs mt-1';
+            this.parentNode.appendChild(counterElement);
+        }
+        
+        counterElement.textContent = `${current}/${maxChars} caracteres`;
+        counterElement.className = `text-xs mt-1 ${remaining < 100 ? 'text-red-500' : 'text-gray-500'}`;
+        
+        if (current > maxChars) {
+            this.value = this.value.substring(0, maxChars);
+        }
+    });
+
+    // Auto-expandir textarea
+    mensagemField.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+</script>
+{% endblock %}

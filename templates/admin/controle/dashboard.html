@@ -6,6 +6,37 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
+    /* FORÇA TODOS OS TEXTOS PARA PRETO - VERSÃO AGRESSIVA */
+    body, body *, 
+    .content-wrapper, .content-wrapper *,
+    .main-header, .main-header *,
+    .main-sidebar, .main-sidebar *,
+    .dashboard-stats, .dashboard-stats *,
+    .recent-sales, .recent-sales *,
+    .dashboard-header, .dashboard-header *,
+    .quick-actions, .quick-actions *,
+    h1, h2, h3, h4, h5, h6,
+    p, span, div, td, th, strong, em,
+    .stat-number, .stat-label, .stat-icon,
+    .sales-table, .sales-table *,
+    .btn-action {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+    
+    /* Reset para garantir bom contraste - TODOS OS TEXTOS PRETOS */
+    *, *::before, *::after {
+        color: #000000 !important;
+    }
+    
+    .dashboard-stats, .recent-sales, .dashboard-header, .quick-actions {
+        color: #000000 !important;
+    }
+    
+    .dashboard-stats * {
+        color: #000000 !important;
+    }
+    
     .dashboard-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -14,17 +45,18 @@
     }
     
     .stat-card {
-        background: white;
+        background: #ffffff !important;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         border-left: 4px solid #007cba;
         transition: transform 0.2s ease;
+        border: 1px solid #e9ecef;
     }
     
     .stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
     
     .stat-card.clientes {
@@ -36,7 +68,7 @@
     }
     
     .stat-card.andamento {
-        border-left-color: #ffc107;
+        border-left-color: #fd7e14;
     }
     
     .stat-card.concluidas {
@@ -46,89 +78,113 @@
     .stat-number {
         font-size: 2.5rem;
         font-weight: bold;
-        color: #333;
+        color: #000000 !important;
         margin: 0;
         line-height: 1;
     }
     
     .stat-label {
-        color: #666;
+        color: #000000 !important;
         font-size: 0.9rem;
-        margin-top: 5px;
+        margin-top: 8px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        font-weight: 600;
     }
     
     .stat-icon {
         float: right;
         font-size: 2rem;
-        opacity: 0.3;
+        opacity: 0.4;
         margin-top: -10px;
+        color: #000000 !important;
     }
     
     .recent-sales {
-        background: white;
+        background: #ffffff !important;
         border-radius: 8px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        border: 1px solid #e9ecef;
     }
     
     .recent-sales h3 {
         margin-top: 0;
         margin-bottom: 20px;
-        color: #333;
+        color: #000000 !important;
         border-bottom: 2px solid #007cba;
         padding-bottom: 10px;
+        font-weight: 600;
     }
     
     .sales-table {
         width: 100%;
         border-collapse: collapse;
+        background: #ffffff !important;
     }
     
     .sales-table th,
     .sales-table td {
         padding: 12px;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #dee2e6;
+        color: #000000 !important;
     }
     
     .sales-table th {
-        background-color: #f8f9fa;
+        background-color: #f8f9fa !important;
         font-weight: 600;
-        color: #333;
+        color: #000000 !important;
     }
     
     .sales-table tr:hover {
-        background-color: #f8f9fa;
+        background-color: #f8f9fa !important;
+    }
+    
+    .sales-table a {
+        color: #007cba !important;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .sales-table a:hover {
+        color: #005a87 !important;
+        text-decoration: underline;
     }
     
     .status-badge {
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 20px;
         font-size: 12px;
-        font-weight: bold;
-        color: white;
+        font-weight: 600;
+        color: white !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
     }
     
     .status-iniciada {
-        background-color: #F59E0B;
+        background-color: #fd7e14 !important;
+        color: white !important;
     }
     
     .status-andamento {
-        background-color: #3B82F6;
+        background-color: #0d6efd !important;
+        color: white !important;
     }
     
     .status-concluida {
-        background-color: #10B981;
+        background-color: #198754 !important;
+        color: white !important;
     }
     
     .progress-bar-container {
         width: 100px;
-        height: 20px;
-        background-color: #E5E7EB;
-        border-radius: 4px;
+        height: 24px;
+        background-color: #e9ecef !important;
+        border-radius: 12px;
         overflow: hidden;
+        border: 1px solid #dee2e6;
     }
     
     .progress-bar {
@@ -136,64 +192,137 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: white !important;
         font-size: 11px;
         font-weight: bold;
         transition: width 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     
     .dashboard-header {
         margin-bottom: 30px;
+        background: #ffffff !important;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
     }
     
     .dashboard-header h1 {
-        color: #333;
+        color: #000000 !important;
         margin: 0;
         font-size: 2rem;
         font-weight: 300;
     }
     
     .dashboard-header p {
-        color: #666;
+        color: #000000 !important;
         margin: 5px 0 0 0;
         font-size: 1.1rem;
     }
     
     .quick-actions {
         margin: 20px 0;
+        background: #ffffff !important;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
     }
     
     .btn-action {
         display: inline-block;
-        padding: 10px 20px;
-        margin-right: 10px;
-        background-color: #007cba;
-        color: white;
+        padding: 12px 24px;
+        margin-right: 12px;
+        margin-bottom: 8px;
+        background-color: #007cba !important;
+        color: white !important;
         text-decoration: none;
-        border-radius: 4px;
+        border-radius: 6px;
         font-weight: 500;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .btn-action:hover {
-        background-color: #005a87;
-        color: white;
+        background-color: #005a87 !important;
+        color: white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        text-decoration: none;
     }
     
     .btn-success {
-        background-color: #28a745;
+        background-color: #198754 !important;
     }
     
     .btn-success:hover {
-        background-color: #1e7e34;
+        background-color: #146c43 !important;
+    }
+    
+    /* Melhorar visibilidade no estado vazio */
+    .recent-sales div[style*="text-align: center"] {
+        color: #000000 !important;
+    }
+    
+    .recent-sales div[style*="text-align: center"] p {
+        color: #000000 !important;
+    }
+    
+    /* Garantir contraste em todos os elementos */
+    .content * {
+        color: #000000 !important;
+    }
+    
+    /* Sobrescrever estilos do jazzmin que podem estar causando problemas */
+    body.admin .dashboard-stats,
+    body.admin .recent-sales,
+    body.admin .dashboard-header,
+    body.admin .quick-actions {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    body.admin .dashboard-stats *,
+    body.admin .recent-sales *,
+    body.admin .dashboard-header *,
+    body.admin .quick-actions * {
+        color: #000000 !important;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-header">
-    <h1><i class="fas fa-chart-line"></i> Dashboard de Vendas</h1>
-    <p>Visão geral do sistema de controle de vendas da Prisma Avaliações</p>
+<div class="dashboard-header" style="color: #000000 !important;">
+    <h1 style="color: #000000 !important;"><i class="fas fa-chart-line"></i> Dashboard de Vendas</h1>
+    <p style="color: #000000 !important;">Visão geral do sistema de controle de vendas da Prisma Avaliações</p>
+</div>
+
+<!-- Card de Estatísticas Mensais -->
+<div style="margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #0097b2 0%, #007a94 100%); border-radius: 12px; color: white; box-shadow: 0 8px 32px rgba(0, 151, 178, 0.3);">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h3 style="color: white !important; margin-bottom: 20px; font-size: 20px; font-weight: 600;">
+                <i class="fas fa-calendar-alt" style="margin-right: 12px;"></i>
+                Estatísticas de {{ mes_nome }} {{ ano_atual }}
+            </h3>
+            <div style="display: flex; gap: 50px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: bold; color: white !important; margin-bottom: 5px;">{{ total_vendas_mes }}</div>
+                    <div style="color: rgba(255,255,255,0.9) !important; font-size: 14px;">Vendas Fechadas no Mês</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: bold; color: white !important; margin-bottom: 5px;">
+                        R$ {{ valor_total_mes|floatformat:0 }}
+                    </div>
+                    <div style="color: rgba(255,255,255,0.9) !important; font-size: 14px;">Valor de Vendas Fechadas</div>
+                </div>
+            </div>
+        </div>
+        <div style="font-size: 56px; color: rgba(255,255,255,0.2); margin-left: 30px;">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+    </div>
 </div>
 
 <div class="quick-actions">
@@ -213,60 +342,60 @@
 
 <div class="dashboard-stats">
     <div class="stat-card clientes">
-        <div class="stat-icon">
+        <div class="stat-icon" style="color: #000000 !important;">
             <i class="fas fa-users"></i>
         </div>
-        <div class="stat-number">{{ total_clientes }}</div>
-        <div class="stat-label">Total de Clientes</div>
+        <div class="stat-number" style="color: #000000 !important;">{{ total_clientes }}</div>
+        <div class="stat-label" style="color: #000000 !important;">Total de Clientes</div>
     </div>
     
     <div class="stat-card vendas">
-        <div class="stat-icon">
+        <div class="stat-icon" style="color: #000000 !important;">
             <i class="fas fa-handshake"></i>
         </div>
-        <div class="stat-number">{{ total_vendas }}</div>
-        <div class="stat-label">Total de Vendas</div>
+        <div class="stat-number" style="color: #000000 !important;">{{ total_vendas }}</div>
+        <div class="stat-label" style="color: #000000 !important;">Total de Vendas</div>
     </div>
     
     <div class="stat-card andamento">
-        <div class="stat-icon">
+        <div class="stat-icon" style="color: #000000 !important;">
             <i class="fas fa-clock"></i>
         </div>
-        <div class="stat-number">{{ vendas_em_andamento }}</div>
-        <div class="stat-label">Em Andamento</div>
+        <div class="stat-number" style="color: #000000 !important;">{{ vendas_em_andamento }}</div>
+        <div class="stat-label" style="color: #000000 !important;">Em Andamento</div>
     </div>
     
     <div class="stat-card concluidas">
-        <div class="stat-icon">
+        <div class="stat-icon" style="color: #000000 !important;">
             <i class="fas fa-check-circle"></i>
         </div>
-        <div class="stat-number">{{ vendas_concluidas }}</div>
-        <div class="stat-label">Concluídas</div>
+        <div class="stat-number" style="color: #000000 !important;">{{ vendas_concluidas }}</div>
+        <div class="stat-label" style="color: #000000 !important;">Concluídas</div>
     </div>
 </div>
 
 <div class="recent-sales">
-    <h3><i class="fas fa-history"></i> Vendas Recentes</h3>
+    <h3 style="color: #000000 !important;"><i class="fas fa-history"></i> Vendas Recentes</h3>
     
     {% if vendas_recentes %}
     <table class="sales-table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Status</th>
-                <th>Progresso</th>
-                <th>Valor</th>
-                <th>Data</th>
-                <th>Ações</th>
+                <th style="color: #000000 !important;">ID</th>
+                <th style="color: #000000 !important;">Cliente</th>
+                <th style="color: #000000 !important;">Status</th>
+                <th style="color: #000000 !important;">Progresso</th>
+                <th style="color: #000000 !important;">Valor</th>
+                <th style="color: #000000 !important;">Data</th>
+                <th style="color: #000000 !important;">Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for venda in vendas_recentes %}
             <tr>
-                <td><strong>#{{ venda.id }}</strong></td>
-                <td>
-                    <a href="{% url 'admin:controle_cliente_change' venda.cliente.id %}">
+                <td style="color: #000000 !important;"><strong>#{{ venda.id }}</strong></td>
+                <td style="color: #000000 !important;">
+                    <a href="{% url 'admin:controle_cliente_change' venda.cliente.id %}" style="color: #007cba !important;">
                         {{ venda.cliente.nome }}
                     </a>
                 </td>
@@ -277,20 +406,30 @@
                 </td>
                 <td>
                     <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: {{ venda.progresso_percentual }}%; background-color: {% if venda.progresso_percentual == 100 %}#10B981{% elif venda.progresso_percentual > 50 %}#3B82F6{% else %}#F59E0B{% endif %};">
-                            {{ venda.progresso_percentual }}%
-                        </div>
+                        {% if venda.progresso_percentual == 100 %}
+                            <div class="progress-bar" style="width: {{ venda.progresso_percentual }}%; background-color: #198754;">
+                                {{ venda.progresso_percentual }}%
+                            </div>
+                        {% elif venda.progresso_percentual > 50 %}
+                            <div class="progress-bar" style="width: {{ venda.progresso_percentual }}%; background-color: #0d6efd;">
+                                {{ venda.progresso_percentual }}%
+                            </div>
+                        {% else %}
+                            <div class="progress-bar" style="width: {{ venda.progresso_percentual }}%; background-color: #fd7e14;">
+                                {{ venda.progresso_percentual }}%
+                            </div>
+                        {% endif %}
                     </div>
                 </td>
-                <td>
+                <td style="color: #000000 !important;">
                     {% if venda.valor_total %}
                         R$ {{ venda.valor_total|floatformat:2 }}
                     {% else %}
                         -
                     {% endif %}
                 </td>
-                <td>{{ venda.data_criacao|date:"d/m/Y" }}</td>
-                <td>
+                <td style="color: #000000 !important;">{{ venda.data_criacao|date:"d/m/Y" }}</td>
+                <td style="color: #000000 !important;">
                     <a href="{% url 'admin:controle_venda_change' venda.id %}" class="btn-action" style="padding: 4px 8px; font-size: 12px; margin: 0;">
                         <i class="fas fa-edit"></i> Editar
                     </a>

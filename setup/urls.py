@@ -1,5 +1,14 @@
 """
-URL configuration for setup project.
+URL configuration for setuurlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("Prisma_avaliacoes.urls")),
+    path("blog/", include("artigos.urls")),
+    path("area-cliente/", include("area_cliente.urls")),  # Nova área do cliente
+    
+    # SEO URLs
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: http://127.0.0.1:8000/sitemap.xml", content_type="text/plain")),
+].
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -33,6 +42,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("Prisma_avaliacoes.urls")),
     path("blog/", include("artigos.urls")),
+    path("area-cliente/", include("area_cliente.urls")),  # Área do cliente
     
     # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

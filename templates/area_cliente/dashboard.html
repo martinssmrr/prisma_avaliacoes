@@ -1,0 +1,174 @@
+{% extends 'area_cliente/base.html' %}
+
+{% block title %}Dashboard - Área do Cliente - Prisma Avaliações{% endblock %}
+
+{% block content %}
+<!-- Cabeçalho da Página -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+    </h1>
+    <p class="text-gray-600">Bem-vindo à sua área do cliente, {{ cliente.nome }}!</p>
+</div>
+
+<!-- Cards de Estatísticas -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Total de Compras -->
+    <div class="bg-white rounded-lg card-shadow p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Total de Compras</p>
+                <p class="text-3xl font-bold text-blue-600">{{ total_vendas }}</p>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-full">
+                <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Concluídas -->
+    <div class="bg-white rounded-lg card-shadow p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Concluídas</p>
+                <p class="text-3xl font-bold text-green-600">{{ vendas_concluidas }}</p>
+            </div>
+            <div class="bg-green-100 p-3 rounded-full">
+                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Em Andamento -->
+    <div class="bg-white rounded-lg card-shadow p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Em Andamento</p>
+                <p class="text-3xl font-bold text-orange-600">{{ vendas_andamento }}</p>
+            </div>
+            <div class="bg-orange-100 p-3 rounded-full">
+                <i class="fas fa-clock text-orange-600 text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ações Rápidas -->
+<div class="bg-white rounded-lg card-shadow p-6 mb-8">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-bolt mr-2"></i>Ações Rápidas
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="{% url 'area_cliente:minhas_compras' %}" class="btn-primary text-white p-4 rounded-lg text-center hover:transform hover:scale-105 transition-all">
+            <i class="fas fa-shopping-cart text-2xl mb-2 block"></i>
+            <span class="font-medium">Minhas Compras</span>
+        </a>
+        
+        <a href="{% url 'area_cliente:trocar_senha' %}" class="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-lg text-center hover:transform hover:scale-105 transition-all">
+            <i class="fas fa-key text-2xl mb-2 block"></i>
+            <span class="font-medium">Trocar Senha</span>
+        </a>
+        
+        <a href="{% url 'area_cliente:suporte' %}" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center hover:transform hover:scale-105 transition-all">
+            <i class="fas fa-life-ring text-2xl mb-2 block"></i>
+            <span class="font-medium">Suporte</span>
+        </a>
+        
+        <a href="https://wa.me/5561998311920" target="_blank" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg text-center hover:transform hover:scale-105 transition-all">
+            <i class="fab fa-whatsapp text-2xl mb-2 block"></i>
+            <span class="font-medium">WhatsApp</span>
+        </a>
+    </div>
+</div>
+
+<!-- Compras Recentes -->
+{% if vendas %}
+<div class="bg-white rounded-lg card-shadow p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800">
+            <i class="fas fa-history mr-2"></i>Compras Recentes
+        </h2>
+        <a href="{% url 'area_cliente:minhas_compras' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+            Ver todas <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+    
+    <div class="space-y-4">
+        {% for venda in vendas|slice:":3" %}
+        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span class="font-semibold text-gray-800">Venda #{{ venda.id }}</span>
+                        <span class="status-badge px-2 py-1 rounded-full text-xs font-medium
+                            {% if venda.status_geral == 'Concluída' %}bg-green-100 text-green-800
+                            {% elif venda.status_geral == 'Em Andamento' %}bg-blue-100 text-blue-800
+                            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                            {{ venda.status_geral }}
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                        <div>
+                            <i class="fas fa-calendar mr-1"></i>
+                            {{ venda.data_criacao|date:"d/m/Y" }}
+                        </div>
+                        {% if venda.valor_total %}
+                        <div>
+                            <i class="fas fa-dollar-sign mr-1"></i>
+                            R$ {{ venda.valor_total|floatformat:2 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Barra de Progresso -->
+                    <div class="mb-3">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>Progresso</span>
+                            <span>{{ venda.progresso_percentual }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                                 style="width: {{ venda.progresso_percentual }}%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Próximo: {{ venda.proxima_etapa }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col space-y-2 ml-4">
+                    <!-- Botão de Pagamento -->
+                    {% if venda.pode_pagar_segundo_sinal %}
+                    <a href="{% url 'area_cliente:pagar_segundo_sinal' venda.id %}" 
+                       class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                        <i class="fas fa-credit-card mr-1"></i>Pagar 2º Sinal
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Botão de Download -->
+                    {% if venda.pode_baixar_documento %}
+                    <a href="{% url 'area_cliente:baixar_documento' venda.id %}" 
+                       class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                        <i class="fas fa-download mr-1"></i>Baixar Documento
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<!-- Estado Vazio -->
+<div class="bg-white rounded-lg card-shadow p-8 text-center">
+    <div class="mb-4">
+        <i class="fas fa-shopping-cart text-gray-400 text-6xl"></i>
+    </div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">Nenhuma compra encontrada</h3>
+    <p class="text-gray-600 mb-6">Você ainda não possui nenhuma compra em nosso sistema.</p>
+    <a href="https://wa.me/5511999999999" target="_blank" class="btn-primary text-white px-6 py-3 rounded-lg font-medium">
+        <i class="fab fa-whatsapp mr-2"></i>Solicitar Orçamento
+    </a>
+</div>
+{% endif %}
+{% endblock %}

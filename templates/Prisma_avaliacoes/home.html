@@ -3,6 +3,74 @@
 
 {% block content %}
 
+<style>
+/* Estilos para o carousel de depoimentos - Clean e discreto */
+#depoimentosCarousel .carousel-control-prev,
+#depoimentosCarousel .carousel-control-next {
+    width: 3%;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+#depoimentosCarousel .carousel-control-prev:hover,
+#depoimentosCarousel .carousel-control-next:hover {
+    opacity: 0.7;
+}
+
+#depoimentosCarousel .carousel-control-prev-icon,
+#depoimentosCarousel .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    padding: 8px;
+    width: 32px;
+    height: 32px;
+    background-size: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#depoimentosCarousel .carousel-indicators {
+    bottom: -40px;
+}
+
+#depoimentosCarousel .carousel-indicators button {
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0 4px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+#depoimentosCarousel .carousel-indicators button.active {
+    background-color: #007bff;
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+#depoimentosCarousel .carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    #depoimentosCarousel .carousel-control-prev,
+    #depoimentosCarousel .carousel-control-next {
+        width: 8%;
+    }
+    
+    #depoimentosCarousel .col-lg-4 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    #depoimentosCarousel .row {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+
 <!-- Seção Hero com Imagem de Fundo Expandida -->
 <!-- Para voltar ao design anterior, troque 'hero-with-image' por 'bg-gradient-primary' 
      e remova o 'style="background-image: url('{% static 'img/home2.jpg' %}');"' -->
@@ -94,34 +162,65 @@
             </div>
         </div>
         
-        <div class="row g-4">
-            {% for depoimento in depoimentos %}
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= depoimento.estrelas %}
-                                    <i class="fas fa-star text-warning"></i>
-                                {% else %}
-                                    <i class="far fa-star text-muted"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <p class="card-text mb-4">"{{ depoimento.texto }}"</p>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-circle bg-primary text-white me-3">
-                                {{ depoimento.nome|slice:":1" }}
-                            </div>
-                            <div>
-                                <h6 class="mb-0 fw-bold">{{ depoimento.nome }}</h6>
-                                <small class="text-muted">{{ depoimento.cargo }}</small>
+        <!-- Carousel de Depoimentos -->
+        <div id="depoimentosCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for depoimento in depoimentos %}
+                    {% if forloop.counter0|divisibleby:3 %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="row g-4">
+                    {% endif %}
+                    
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= depoimento.estrelas %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-muted"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="card-text mb-4">"{{ depoimento.texto }}"</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle bg-primary text-white me-3">
+                                        {{ depoimento.nome|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ depoimento.nome }}</h6>
+                                        <small class="text-muted">{{ depoimento.cargo }}</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    
+                    {% if forloop.counter|divisibleby:3 or forloop.last %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
+            
+            <!-- Controles do Carousel -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#depoimentosCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#depoimentosCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+            
+            <!-- Indicadores -->
+            <div class="carousel-indicators">
+                {% for i in "123" %}
+                    <button type="button" data-bs-target="#depoimentosCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                            {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </section>

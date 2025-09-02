@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 
 class Cliente(models.Model):
     """Modelo para clientes da empresa"""
@@ -65,6 +66,16 @@ class Cliente(models.Model):
     data_atualizacao = models.DateTimeField(
         auto_now=True,
         verbose_name="Última Atualização"
+    )
+    
+    # Relacionamento com usuário Django para área do cliente
+    usuario = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="Usuário do Cliente",
+        help_text="Usuário para acesso à área do cliente"
     )
     
     class Meta:
@@ -136,6 +147,22 @@ class Venda(models.Model):
         blank=True,
         null=True,
         verbose_name="Observações"
+    )
+    
+    # Documento final para área do cliente
+    documento_final = models.FileField(
+        upload_to='documentos_finais/',
+        blank=True,
+        null=True,
+        verbose_name="Documento Final",
+        help_text="PDF/Laudo que será disponibilizado ao cliente após pagamento do 2º sinal"
+    )
+    
+    # Controle de pagamentos
+    segundo_sinal_pago = models.BooleanField(
+        default=False,
+        verbose_name="2º Sinal Pago",
+        help_text="Marcar como pago quando cliente efetuar o pagamento do segundo sinal"
     )
     
     # Metadados
@@ -210,6 +237,16 @@ class Venda(models.Model):
                 return nome
         
         return "Todas as etapas concluídas"
+    
+    @property
+    def pode_pagar_segundo_sinal(self):
+        """Verifica se o cliente pode pagar o segundo sinal"""
+        return self.confeccao and not self.segundo_sinal_pago
+    
+    @property
+    def pode_baixar_documento(self):
+        """Verifica se o cliente pode baixar o documento final"""
+        return self.confeccao and self.segundo_sinal_pago and self.documento_final
     
     def __str__(self):
         return f"Venda #{self.id} - {self.cliente.nome} ({self.status_geral})"

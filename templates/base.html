@@ -30,7 +30,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="{% url 'Prisma_avaliacoes:home' %}">
-                <img src="{% static 'img/logo1.png' %}" alt="Prisma Avaliações" height="60" class="me-2">
+                <img src="{% static 'img/logo.png' %}" alt="Prisma Avaliações" height="60" class="me-2">
                 Prisma Avaliações
             </a>
             
@@ -56,6 +56,11 @@
                         <a class="nav-link" href="{% url 'Prisma_avaliacoes:home' %}#contato">Contato</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'area_cliente:login' %}">
+                            <i class="fas fa-user me-1"></i>Área do Cliente
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="btn btn-primary ms-2" href="https://wa.me/5561998311920" target="_blank">
                             <i class="fab fa-whatsapp me-1"></i>WhatsApp
                         </a>
@@ -76,7 +81,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="{% static 'img/logo1.png' %}" alt="Prisma Avaliações" height="70" class="me-3">
+                        <img src="{% static 'img/logo.png' %}" alt="Prisma Avaliações" height="70" class="me-3">
                         <h5 class="fw-bold mb-0">Prisma Avaliações</h5>
                     </div>
                     <p class="text-light">
@@ -106,10 +111,10 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h6 class="fw-bold mb-3">Nossos Serviços</h6>
                     <ul class="list-unstyled">
-                        <li class="text-light">Laudos Técnicos</li>
-                        <li class="text-light">Avaliação Residencial</li>
-                        <li class="text-light">Avaliação Comercial</li>
-                        <li class="text-light">Consultoria Imobiliária</li>
+                        <li class="text-light">Laudos Técnicos Especializados</li>
+                        <li class="text-light">Consultoria para Proprietários</li>
+                        <li class="text-light">Regularização Imobiliária</li>
+                        <li class="text-light">Consultoria Tributária</li>
                     </ul>
                 </div>
                 

@@ -1,0 +1,206 @@
+{% extends 'area_cliente/base.html' %}
+
+{% block title %}Minhas Compras - Área do Cliente - Prisma Avaliações{% endblock %}
+
+{% block content %}
+<!-- Cabeçalho da Página -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-shopping-cart mr-3"></i>Minhas Compras
+    </h1>
+    <p class="text-gray-600">Acompanhe o status de todas as suas compras</p>
+</div>
+
+{% if vendas %}
+<!-- Lista de Compras -->
+<div class="space-y-6">
+    {% for venda in vendas %}
+    <div class="bg-white rounded-lg card-shadow p-6">
+        <!-- Cabeçalho da Venda -->
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Venda #{{ venda.id }}</h3>
+                <p class="text-gray-600">Criada em {{ venda.data_criacao|date:"d/m/Y H:i" }}</p>
+            </div>
+            
+            <span class="status-badge px-4 py-2 rounded-full text-sm font-medium
+                {% if venda.status_geral == 'Concluída' %}bg-green-100 text-green-800
+                {% elif venda.status_geral == 'Em Andamento' %}bg-blue-100 text-blue-800
+                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                <i class="fas {% if venda.status_geral == 'Concluída' %}fa-check-circle{% elif venda.status_geral == 'Em Andamento' %}fa-clock{% else %}fa-play-circle{% endif %} mr-1"></i>
+                {{ venda.status_geral }}
+            </span>
+        </div>
+
+        <!-- Informações da Venda -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {% if venda.valor_total %}
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <i class="fas fa-dollar-sign text-gray-500 text-lg mb-2"></i>
+                <p class="text-sm text-gray-600">Valor Total</p>
+                <p class="text-lg font-bold text-gray-800">R$ {{ venda.valor_total|floatformat:2 }}</p>
+            </div>
+            {% endif %}
+            
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <i class="fas fa-percentage text-gray-500 text-lg mb-2"></i>
+                <p class="text-sm text-gray-600">Progresso</p>
+                <p class="text-lg font-bold text-gray-800">{{ venda.progresso_percentual }}%</p>
+            </div>
+            
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <i class="fas fa-arrow-right text-gray-500 text-lg mb-2"></i>
+                <p class="text-sm text-gray-600">Próxima Etapa</p>
+                <p class="text-sm font-medium text-gray-800">{{ venda.proxima_etapa }}</p>
+            </div>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div class="mb-6">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Progresso Geral</span>
+                <span>{{ venda.progresso_percentual }}% concluído</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500" 
+                     style="width: {{ venda.progresso_percentual }}%"></div>
+            </div>
+        </div>
+
+        <!-- Etapas do Processo -->
+        <div class="mb-6">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Etapas do Processo</h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Orçamento -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.orcamento %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-calculator text-lg mr-3 {% if venda.orcamento %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.orcamento %}text-green-800{% else %}text-gray-600{% endif %}">Orçamento</p>
+                        <p class="text-xs {% if venda.orcamento %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.orcamento %}✓ Concluído{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Venda -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.venda %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-handshake text-lg mr-3 {% if venda.venda %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.venda %}text-green-800{% else %}text-gray-600{% endif %}">Venda</p>
+                        <p class="text-xs {% if venda.venda %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.venda %}✓ Fechada{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Documentação -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.documentacao %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-file-alt text-lg mr-3 {% if venda.documentacao %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.documentacao %}text-green-800{% else %}text-gray-600{% endif %}">Documentos</p>
+                        <p class="text-xs {% if venda.documentacao %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.documentacao %}✓ Coletados{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 1º Sinal -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.sinal_1 %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-credit-card text-lg mr-3 {% if venda.sinal_1 %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.sinal_1 %}text-green-800{% else %}text-gray-600{% endif %}">1º Sinal</p>
+                        <p class="text-xs {% if venda.sinal_1 %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.sinal_1 %}✓ Pago{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Confecção -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.confeccao %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-cogs text-lg mr-3 {% if venda.confeccao %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.confeccao %}text-green-800{% else %}text-gray-600{% endif %}">Confecção</p>
+                        <p class="text-xs {% if venda.confeccao %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.confeccao %}✓ Concluída{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2º Sinal -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.segundo_sinal_pago %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-money-bill text-lg mr-3 {% if venda.segundo_sinal_pago %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.segundo_sinal_pago %}text-green-800{% else %}text-gray-600{% endif %}">2º Sinal</p>
+                        <p class="text-xs {% if venda.segundo_sinal_pago %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.segundo_sinal_pago %}✓ Pago{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Envio -->
+                <div class="flex items-center p-3 rounded-lg {% if venda.envio %}bg-green-50 border border-green-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                    <i class="fas fa-paper-plane text-lg mr-3 {% if venda.envio %}text-green-600{% else %}text-gray-400{% endif %}"></i>
+                    <div>
+                        <p class="font-medium {% if venda.envio %}text-green-800{% else %}text-gray-600{% endif %}">Envio</p>
+                        <p class="text-xs {% if venda.envio %}text-green-600{% else %}text-gray-500{% endif %}">
+                            {% if venda.envio %}✓ Enviado{% else %}Pendente{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Disponíveis -->
+        <div class="flex flex-wrap gap-3 justify-end">
+            <!-- Botão de Pagamento do 2º Sinal -->
+            {% if venda.pode_pagar_segundo_sinal %}
+            <a href="{% url 'area_cliente:pagar_segundo_sinal' venda.id %}" 
+               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <i class="fas fa-credit-card mr-2"></i>Pagar 2º Sinal
+            </a>
+            {% endif %}
+            
+            <!-- Botão de Download -->
+            {% if venda.pode_baixar_documento %}
+            <a href="{% url 'area_cliente:baixar_documento' venda.id %}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <i class="fas fa-download mr-2"></i>Baixar Documento
+            </a>
+            {% endif %}
+            
+            <!-- Status de Aguardando -->
+            {% if not venda.pode_pagar_segundo_sinal and not venda.pode_baixar_documento and venda.status_geral != 'Concluída' %}
+            <span class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-medium">
+                <i class="fas fa-clock mr-2"></i>Aguardando próxima etapa
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Observações -->
+        {% if venda.observacoes %}
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h5 class="font-semibold text-blue-800 mb-2">
+                <i class="fas fa-info-circle mr-1"></i>Observações
+            </h5>
+            <p class="text-blue-700 text-sm">{{ venda.observacoes }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<!-- Estado Vazio -->
+<div class="bg-white rounded-lg card-shadow p-8 text-center">
+    <div class="mb-4">
+        <i class="fas fa-shopping-cart text-gray-400 text-6xl"></i>
+    </div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">Nenhuma compra encontrada</h3>
+    <p class="text-gray-600 mb-6">Você ainda não possui nenhuma compra em nosso sistema.</p>
+    <a href="https://wa.me/5561998311920" target="_blank" class="btn-primary text-white px-6 py-3 rounded-lg font-medium">
+        <i class="fab fa-whatsapp mr-2"></i>Solicitar Orçamento
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -5,7 +5,9 @@ from django.urls import path, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 from .models import Cliente, Venda
+import re
 
 
 class StatusVendaFilter(admin.SimpleListFilter):
@@ -62,12 +64,13 @@ class VendaInline(admin.TabularInline):
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'telefone', 'email', 'cidade', 'estado', 'total_vendas', 'data_cadastro')
+    list_display = ('nome', 'telefone', 'email', 'cidade', 'estado', 'usuario_status', 'total_vendas', 'data_cadastro')
     list_filter = ('estado', 'data_cadastro')
     search_fields = ('nome', 'telefone', 'email', 'cidade')
     ordering = ('-data_cadastro',)
     readonly_fields = ('data_cadastro', 'data_atualizacao')
     inlines = [VendaInline]
+    actions = ['criar_usuario_cliente']
     
     fieldsets = (
         ('Informações Básicas', {
@@ -77,11 +80,27 @@ class ClienteAdmin(admin.ModelAdmin):
             'fields': ('email', 'cidade', 'estado'),
             'classes': ('collapse',)
         }),
+        ('Área do Cliente', {
+            'fields': ('usuario',),
+            'classes': ('collapse',),
+            'description': 'Usuário para acesso à área do cliente'
+        }),
         ('Metadados', {
             'fields': ('data_cadastro', 'data_atualizacao'),
             'classes': ('collapse',)
         })
     )
+    
+    def usuario_status(self, obj):
+        if obj.usuario:
+            return format_html(
+                '<span style="background-color: #10B981; color: white; padding: 2px 6px; border-radius: 3px;">✓ Ativo</span>'
+            )
+        else:
+            return format_html(
+                '<span style="background-color: #EF4444; color: white; padding: 2px 6px; border-radius: 3px;">✗ Não criado</span>'
+            )
+    usuario_status.short_description = "Acesso"
     
     def total_vendas(self, obj):
         count = obj.vendas.count()
@@ -92,6 +111,56 @@ class ClienteAdmin(admin.ModelAdmin):
             )
         return "0"
     total_vendas.short_description = "Vendas"
+    
+    def criar_usuario_cliente(self, request, queryset):
+        """Criar usuários para clientes selecionados"""
+        created_count = 0
+        
+        for cliente in queryset:
+            if not cliente.usuario:
+                # Extrair apenas números do telefone
+                telefone_numeros = re.sub(r'\D', '', cliente.telefone)
+                
+                if len(telefone_numeros) >= 4:
+                    # Criar username único baseado no telefone
+                    username = telefone_numeros
+                    counter = 1
+                    while User.objects.filter(username=username).exists():
+                        username = f"{telefone_numeros}_{counter}"
+                        counter += 1
+                    
+                    # Senha padrão: últimos 4 dígitos do telefone
+                    senha_padrao = telefone_numeros[-4:]
+                    
+                    # Criar usuário
+                    user = User.objects.create_user(
+                        username=username,
+                        email=cliente.email or '',
+                        password=senha_padrao,
+                        first_name=cliente.nome.split()[0] if cliente.nome else '',
+                        last_name=' '.join(cliente.nome.split()[1:]) if len(cliente.nome.split()) > 1 else ''
+                    )
+                    
+                    # Associar ao cliente
+                    cliente.usuario = user
+                    cliente.save()
+                    
+                    created_count += 1
+        
+        if created_count > 0:
+            self.message_user(
+                request,
+                f'{created_count} usuário(s) criado(s) com sucesso! Senhas padrão: últimos 4 dígitos do telefone.',
+                messages.SUCCESS
+            )
+        else:
+            self.message_user(
+                request,
+                'Nenhum usuário foi criado. Clientes já possuem usuários ou telefones inválidos.',
+                messages.WARNING
+            )
+    
+    criar_usuario_cliente.short_description = "Criar usuário para área do cliente"
 
 
 @admin.register(Venda)
@@ -121,6 +190,11 @@ class VendaAdmin(admin.ModelAdmin):
         ('Informações Financeiras', {
             'fields': ('valor_total',),
         }),
+        ('Área do Cliente', {
+            'fields': ('documento_final', 'segundo_sinal_pago'),
+            'classes': ('wide',),
+            'description': 'Documentos e pagamentos para área do cliente'
+        }),
         ('Observações', {
             'fields': ('observacoes',),
             'classes': ('collapse',)
@@ -145,7 +219,22 @@ class VendaAdmin(admin.ModelAdmin):
     
     def dashboard_view(self, request):
         """View personalizada para dashboard"""
-        # Estatísticas
+        from django.utils import timezone
+        from django.db.models import Sum
+        
+        # Data atual
+        hoje = timezone.now()
+        mes_atual = hoje.month
+        ano_atual = hoje.year
+        
+        # Nomes dos meses em português
+        meses_pt = {
+            1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
+            5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
+            9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+        }
+        
+        # Estatísticas gerais
         total_clientes = Cliente.objects.count()
         total_vendas = Venda.objects.count()
         vendas_em_andamento = Venda.objects.filter(
@@ -153,6 +242,17 @@ class VendaAdmin(admin.ModelAdmin):
             Q(sinal_1=True) | Q(confeccao=True) | Q(sinal_2=True)
         ).exclude(envio=True).count()
         vendas_concluidas = Venda.objects.filter(envio=True).count()
+        
+        # Estatísticas do mês atual - APENAS VENDAS FECHADAS
+        vendas_mes_fechadas = Venda.objects.filter(
+            data_criacao__month=mes_atual,
+            data_criacao__year=ano_atual,
+            venda=True  # Apenas vendas fechadas são contabilizadas
+        )
+        total_vendas_mes = vendas_mes_fechadas.count()
+        valor_total_mes = vendas_mes_fechadas.aggregate(
+            total=Sum('valor_total')
+        )['total'] or 0
         
         # Vendas recentes
         vendas_recentes = Venda.objects.select_related('cliente').order_by('-data_criacao')[:10]
@@ -164,6 +264,10 @@ class VendaAdmin(admin.ModelAdmin):
             'vendas_em_andamento': vendas_em_andamento,
             'vendas_concluidas': vendas_concluidas,
             'vendas_recentes': vendas_recentes,
+            'total_vendas_mes': total_vendas_mes,
+            'valor_total_mes': valor_total_mes,
+            'mes_nome': meses_pt[mes_atual],
+            'ano_atual': ano_atual,
         }
         
         return render(request, 'admin/controle/dashboard.html', context)

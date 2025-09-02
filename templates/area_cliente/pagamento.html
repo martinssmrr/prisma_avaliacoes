@@ -1,0 +1,204 @@
+{% extends 'area_cliente/base.html' %}
+
+{% block title %}Pagamento do 2º Sinal - Área do Cliente - Prisma Avaliações{% endblock %}
+
+{% block content %}
+<!-- Cabeçalho da Página -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-credit-card mr-3"></i>Pagamento do 2º Sinal
+    </h1>
+    <p class="text-gray-600">Venda #{{ venda.id }} - {{ cliente.nome }}</p>
+</div>
+
+<!-- Card de Pagamento -->
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg card-shadow p-8">
+        <!-- Informações da Venda -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Detalhes da Compra</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600">Número da Venda</p>
+                    <p class="font-semibold text-gray-800">#{{ venda.id }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Data da Compra</p>
+                    <p class="font-semibold text-gray-800">{{ venda.data_criacao|date:"d/m/Y" }}</p>
+                </div>
+                
+                {% if venda.valor_total %}
+                <div>
+                    <p class="text-sm text-gray-600">Valor Total</p>
+                    <p class="font-semibold text-gray-800">R$ {{ venda.valor_total|floatformat:2 }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">2º Sinal (50%)</p>
+                    <p class="text-xl font-bold text-green-600">R$ {{ venda.valor_total|floatformat:2|mul:0.5 }}</p>
+                </div>
+                {% else %}
+                <div class="col-span-2">
+                    <p class="text-sm text-gray-600">Valor do 2º Sinal</p>
+                    <p class="text-xl font-bold text-green-600">Consulte o valor com nossa equipe</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Alerta Informativo -->
+        <div class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                <div>
+                    <h4 class="font-semibold text-blue-800 mb-1">Informações Importantes</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• O documento final ficará disponível após confirmação do pagamento</li>
+                        <li>• Este é um checkout simulado para demonstração</li>
+                        <li>• Em produção, integre com um gateway real (Mercado Pago, PagSeguro, etc.)</li>
+                        <li>• O pagamento será processado com segurança</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulação de Checkout -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Dados do Pagamento</h3>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Método de Pagamento -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Método de Pagamento</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                            <input type="radio" name="metodo_pagamento" value="cartao" class="mr-3" checked>
+                            <div class="flex items-center">
+                                <i class="fas fa-credit-card text-blue-600 text-xl mr-2"></i>
+                                <span class="font-medium">Cartão de Crédito</span>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-green-500 transition-colors">
+                            <input type="radio" name="metodo_pagamento" value="pix" class="mr-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-qrcode text-green-600 text-xl mr-2"></i>
+                                <span class="font-medium">PIX</span>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-orange-500 transition-colors">
+                            <input type="radio" name="metodo_pagamento" value="boleto" class="mr-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-barcode text-orange-600 text-xl mr-2"></i>
+                                <span class="font-medium">Boleto</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campos do Cartão (simulação) -->
+                <div id="campos-cartao" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="numero_cartao" class="block text-sm font-medium text-gray-700 mb-1">Número do Cartão</label>
+                            <input type="text" id="numero_cartao" placeholder="1234 5678 9012 3456" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                        
+                        <div>
+                            <label for="nome_cartao" class="block text-sm font-medium text-gray-700 mb-1">Nome no Cartão</label>
+                            <input type="text" id="nome_cartao" placeholder="Nome como no cartão" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="validade" class="block text-sm font-medium text-gray-700 mb-1">Validade</label>
+                            <input type="text" id="validade" placeholder="MM/AA" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                        
+                        <div>
+                            <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                            <input type="text" id="cvv" placeholder="123" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumo -->
+                <div class="p-6 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold text-gray-800">Total a Pagar:</span>
+                        <span class="text-2xl font-bold text-green-600">
+                            {% if venda.valor_total %}
+                                R$ {{ venda.valor_total|floatformat:2|mul:0.5 }}
+                            {% else %}
+                                Consultar
+                            {% endif %}
+                        </span>
+                    </div>
+                    <p class="text-sm text-green-700">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Transação protegida com certificado SSL
+                    </p>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="flex space-x-4">
+                    <a href="{% url 'area_cliente:minhas_compras' %}" 
+                       class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium text-center transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Voltar
+                    </a>
+                    
+                    <button type="submit" 
+                            class="flex-1 btn-primary text-white py-3 px-6 rounded-lg font-medium transition-all">
+                        <i class="fas fa-credit-card mr-2"></i>Confirmar Pagamento
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Informações de Segurança -->
+        <div class="text-center text-sm text-gray-500">
+            <div class="flex justify-center items-center space-x-4 mb-2">
+                <i class="fas fa-lock"></i>
+                <span>Conexão Segura SSL</span>
+                <span>•</span>
+                <i class="fas fa-shield-alt"></i>
+                <span>Dados Protegidos</span>
+            </div>
+            <p>Seus dados estão protegidos e não são armazenados em nossos servidores</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Máscara para número do cartão
+    document.getElementById('numero_cartao').addEventListener('input', function(e) {
+        let valor = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatado = valor.match(/.{1,4}/g)?.join(' ') || valor;
+        e.target.value = formatado;
+    });
+
+    // Máscara para validade
+    document.getElementById('validade').addEventListener('input', function(e) {
+        let valor = e.target.value.replace(/\D/g, '');
+        if (valor.length >= 2) {
+            valor = valor.substring(0, 2) + '/' + valor.substring(2, 4);
+        }
+        e.target.value = valor;
+    });
+
+    // Máscara para CVV
+    document.getElementById('cvv').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
+    });
+</script>
+{% endblock %}

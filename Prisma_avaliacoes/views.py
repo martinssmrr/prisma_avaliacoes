@@ -29,19 +29,19 @@ def home(request):
                 'icone': 'fas fa-file-alt'
             },
             {
-                'titulo': 'Agilidade na Entrega',
-                'descricao': 'Prazos otimizados sem comprometer a qualidade e precisão das avaliações.',
-                'icone': 'fas fa-clock'
+                'titulo': 'Consultoria para Proprietários e Compradores',
+                'descricao': 'Orientação especializada para proprietários e compradores em decisões imobiliárias estratégicas.',
+                'icone': 'fas fa-handshake'
             },
             {
-                'titulo': 'Confiabilidade Comprovada',
-                'descricao': 'Profissionais certificados com vasta experiência no mercado imobiliário brasileiro.',
-                'icone': 'fas fa-shield-alt'
+                'titulo': 'Regularização Imobiliária',
+                'descricao': 'Serviços completos para regularização de imóveis, documentação e adequação às normas vigentes.',
+                'icone': 'fas fa-clipboard-check'
             },
             {
-                'titulo': 'Avaliação Completa',
-                'descricao': 'Análise detalhada considerando localização, estado de conservação e tendências do mercado.',
-                'icone': 'fas fa-home'
+                'titulo': 'Consultoria Tributária Imobiliária',
+                'descricao': 'Assessoria especializada em questões tributárias relacionadas ao mercado imobiliário.',
+                'icone': 'fas fa-calculator'
             }
         ],
         
@@ -63,7 +63,44 @@ def home(request):
                 'cargo': 'Empresário',
                 'texto': 'Recomendo a todos! Avaliação detalhada que me deu segurança para comprar o imóvel.',
                 'estrelas': 5
+            },
+            {
+                'nome': 'Ana Paula Santos',
+                'cargo': 'Investidora',
+                'texto': 'Serviço de consultoria excepcional! Me orientaram perfeitamente na compra do meu primeiro imóvel.',
+                'estrelas': 5
+            },
+            {
+                'nome': 'Carlos Eduardo Lima',
+                'cargo': 'Corretor de Imóveis',
+                'texto': 'Parceria de anos! Sempre entregam laudos de qualidade e no prazo acordado. Muito confiáveis.',
+                'estrelas': 5
+            },
+            {
+                'nome': 'Fernanda Oliveira',
+                'cargo': 'Arquiteta',
+                'texto': 'A regularização do meu projeto foi feita com excelência. Equipe muito competente e atenciosa.',
+                'estrelas': 5
+            },
+            {
+                'nome': 'Roberto Silva',
+                'cargo': 'Contador',
+                'texto': 'A consultoria tributária imobiliária me ajudou a economizar muito dinheiro. Serviço impecável!',
+                'estrelas': 5
+            },
+            {
+                'nome': 'Juliana Costa',
+                'cargo': 'Empresária',
+                'texto': 'Atendimento personalizado e laudo técnico muito detalhado. Superou minhas expectativas!',
+                'estrelas': 5
+            },
+            {
+                'nome': 'Pedro Henrique',
+                'cargo': 'Engenheiro',
+                'texto': 'Profissionais altamente qualificados. O trabalho de avaliação foi perfeito e muito bem fundamentado.',
+                'estrelas': 5
             }
+
         ]
     }
     

@@ -1,0 +1,179 @@
+/* Estilos customizados para melhorar visibilidade no admin */
+
+/* Garantir que TODOS os textos sejam pretos */
+* {
+    color: #000000 !important;
+}
+
+/* Forçar cor preta em todos os elementos */
+body.admin, 
+.main-sidebar,
+.content-wrapper,
+.main-header,
+.content,
+.card,
+.card-body,
+.box,
+.box-body,
+h1, h2, h3, h4, h5, h6,
+p, span, div, td, th, 
+.stat-number, .stat-label,
+.dashboard-header h1,
+.dashboard-header p,
+.recent-sales h3 {
+    color: #000000 !important;
+}
+
+/* Melhorar contraste em links */
+.main-sidebar .nav-link,
+.main-sidebar .nav-link:hover {
+    color: #495057 !important;
+}
+
+.main-sidebar .nav-link.active {
+    background-color: #007cba !important;
+    color: white !important;
+}
+
+/* Garantir fundo branco em áreas de conteúdo */
+.content-wrapper,
+.card,
+.card-body,
+.box,
+.box-body,
+.info-box {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+/* Melhorar contraste em tabelas */
+.table th,
+.table td {
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.05) !important;
+}
+
+/* Melhorar visibilidade de botões */
+.btn {
+    border: 1px solid transparent !important;
+}
+
+.btn-primary {
+    background-color: #007cba !important;
+    border-color: #007cba !important;
+    color: white !important;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: white !important;
+}
+
+/* Melhorar contraste em formulários */
+.form-control,
+.form-select,
+.form-control:focus,
+.form-select:focus {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+}
+
+/* Garantir contraste em breadcrumbs */
+.breadcrumb {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+}
+
+.breadcrumb-item a {
+    color: #007cba !important;
+}
+
+/* Melhorar visibilidade de alertas */
+.alert {
+    border: 1px solid transparent !important;
+}
+
+.alert-success {
+    background-color: #d1edff !important;
+    border-color: #bee5eb !important;
+    color: #0c5460 !important;
+}
+
+.alert-warning {
+    background-color: #fff3cd !important;
+    border-color: #ffeaa7 !important;
+    color: #856404 !important;
+}
+
+.alert-danger {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+    color: #721c24 !important;
+}
+
+/* Melhorar contraste em paginação */
+.pagination .page-link {
+    color: #007cba !important;
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007cba !important;
+    border-color: #007cba !important;
+    color: white !important;
+}
+
+/* Garantir visibilidade em modais */
+.modal-content {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.modal-header {
+    border-bottom-color: #dee2e6 !important;
+}
+
+.modal-footer {
+    border-top-color: #dee2e6 !important;
+}
+
+/* Melhorar contraste em cards de estatísticas */
+.info-box-text,
+.info-box-number {
+    color: #212529 !important;
+}
+
+/* Garantir contraste em dropdowns */
+.dropdown-menu {
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+}
+
+.dropdown-item {
+    color: #212529 !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+/* Customizações específicas solicitadas */
+.card-header {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+}
+
+.brand-link.navbar-dark.active {
+    background-color: #F8F8FF !important;
+    color: #212529 !important;
+}

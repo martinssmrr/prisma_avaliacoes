@@ -33,7 +33,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='prismaav.pythonanywhere.com,loc
 # Application definition
 
 INSTALLED_APPS = [
-    "jazzmin",  # Deve ser o primeiro para funcionar corretamente
+    "jazzmin",  # Interface de admin aprimorada
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "Prisma_avaliacoes",
     "artigos",
     "controle",
+    "area_cliente",  # Nova área do cliente
 ]
 
 MIDDLEWARE = [
@@ -147,10 +148,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 JAZZMIN_SETTINGS = {
     # Nome do site
     "site_title": "Prisma Avaliações",
-    "site_header": "Prisma Avaliações",
-    "site_brand": "Dashboard",
-    "site_logo": "images/logo_pequena.png",
-    "login_logo": "images/logo.png",
+    "site_header": "Prisma Avaliações Imobiliárias",
+    "site_brand": "Prisma Avaliações",
+    "site_logo": "img/logo.png",
+    "login_logo": "img/logo.png",
     
     # Copyright
     "copyright": "Prisma Avaliações Imobiliárias",
@@ -186,7 +187,7 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": True,
     
     # Customização da interface
-    "custom_css": None,
+    "custom_css": "css/admin_custom.css",
     "custom_js": None,
     "show_sidebar": True,
     "navigation_expanded": True,
@@ -197,7 +198,7 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": False,
     
     # Tema
-    "theme": "flatly",  # cerulean, cosmo, cyborg, darkly, flatly, journal, litera, lumen, lux, materia, minty, pulse, sandstone, simplex, sketchy, slate, solar, spacelab, superhero, united, yeti
+    "theme": "lumen",  # Tema claro com excelente contraste
     
     # Modo escuro
     "dark_mode_theme": "darkly",
@@ -217,22 +218,22 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
-    "brand_colour": False,
+    "brand_colour": "navbar-dark",
     "accent": "accent-primary",
-    "navbar": "navbar-dark",
+    "navbar": "navbar-white navbar-light",  # Navbar claro para melhor contraste
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-primary",
+    "sidebar": "sidebar-light-primary",  # Sidebar claro
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "flatly",
+    "theme": "lumen",  # Tema claro consistente
     "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",
