@@ -1,0 +1,29 @@
+[Unit]
+Description=gunicorn daemon for Prisma Avaliações
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/var/www/Prisma_Avaliacoes
+Environment="PATH=/var/www/Prisma_Avaliacoes/venv/bin"
+ExecStart=/var/www/Prisma_Avaliacoes/venv/bin/gunicorn \
+    --access-logfile /var/log/gunicorn/access.log \
+    --error-logfile /var/log/gunicorn/error.log \
+    --workers 3 \
+    --worker-class gthread \
+    --threads 2 \
+    --max-requests 1000 \
+    --max-requests-jitter 100 \
+    --timeout 30 \
+    --keep-alive 2 \
+    --bind unix:/var/www/Prisma_Avaliacoes/gunicorn.sock \
+    setup.wsgi:application
+
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

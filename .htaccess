@@ -1,0 +1,139 @@
+# HostGator cPanel - Configuração Apache para Django
+# Prisma Avaliações Imobiliárias - Production .htaccess
+
+# =============================================================================
+# CONFIGURAÇÕES DO PASSENGER WSGI
+# =============================================================================
+
+# Habilitar Passenger
+PassengerEnabled on
+
+# Definir ambiente de produção
+PassengerAppEnv production
+
+# Especificar versão do Python (ajuste conforme HostGator)
+PassengerPython /usr/bin/python3
+
+# Arquivo WSGI principal
+PassengerAppRoot /home/USERNAME/prismavaliacoes
+PassengerStartupFile passenger_wsgi.py
+
+# =============================================================================
+# REDIRECIONAMENTO FORÇADO PARA HTTPS
+# =============================================================================
+
+RewriteEngine On
+
+# Forçar HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Forçar WWW (opcional - descomente se quiser forçar www)
+# RewriteCond %{HTTP_HOST} !^www\. [NC]
+# RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# =============================================================================
+# CONFIGURAÇÕES DE ARQUIVOS ESTÁTICOS
+# =============================================================================
+
+# Servir arquivos estáticos diretamente pelo Apache
+RewriteRule ^static/(.*)$ /static/$1 [L]
+RewriteRule ^media/(.*)$ /media/$1 [L]
+
+# =============================================================================
+# CONFIGURAÇÕES DE SEGURANÇA
+# =============================================================================
+
+# Bloquear acesso direto ao banco de dados SQLite
+<Files "db.sqlite3">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Bloquear acesso a arquivos Python
+<FilesMatch "\.(py|pyc|pyo)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear acesso a arquivos de configuração
+<FilesMatch "^(settings|wsgi|manage)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear acesso ao diretório .git
+<DirectoryMatch "\.git">
+    Order Allow,Deny
+    Deny from all
+</DirectoryMatch>
+
+# =============================================================================
+# CONFIGURAÇÕES DE PERFORMANCE
+# =============================================================================
+
+# Habilitar compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Cache de arquivos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# =============================================================================
+# HEADERS DE SEGURANÇA
+# =============================================================================
+
+<IfModule mod_headers.c>
+    # Segurança XSS
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # HSTS (HTTPS Strict Transport Security)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Política de Referrer
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (ajuste conforme necessário)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'"
+</IfModule>
+
+# =============================================================================
+# CONFIGURAÇÕES DE ERRO PERSONALIZADAS
+# =============================================================================
+
+# Páginas de erro personalizadas (opcional)
+ErrorDocument 404 /404/
+ErrorDocument 500 /500/
+
+# =============================================================================
+# CONFIGURAÇÕES ADICIONAIS
+# =============================================================================
+
+# Charset padrão
+AddDefaultCharset UTF-8
+
+# Desabilitar listagem de diretórios
+Options -Indexes
+
+# Seguir links simbólicos
+Options +FollowSymLinks

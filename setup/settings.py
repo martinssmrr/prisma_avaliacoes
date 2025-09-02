@@ -27,7 +27,18 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-(=-&$c%lq2!cxtmdwinj4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='prismaav.pythonanywhere.com,localhost,127.0.0.1', cast=Csv())
+# Para desenvolvimento local, force DEBUG=True se necessário
+if not DEBUG:
+    print("⚠️ FORÇANDO DEBUG=True para desenvolvimento local")
+    DEBUG = True
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+
+# Garantir que localhost está sempre incluído para desenvolvimento
+if 'localhost' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('localhost')
+if '127.0.0.1' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('127.0.0.1')
 
 
 # Application definition
