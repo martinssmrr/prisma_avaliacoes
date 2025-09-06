@@ -52,10 +52,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",  # Framework para sitemap
+    "django.contrib.sites",  # Necessário para sitemaps
+    
+    # Apps do projeto
     "Prisma_avaliacoes",
     "artigos",
     "controle",
     "area_cliente",  # Nova área do cliente
+    "seo",  # App SEO completo
 ]
 
 MIDDLEWARE = [
@@ -80,6 +84,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "seo.context_processors.seo_context",  # Context processor SEO
             ],
         },
     },
@@ -255,3 +260,10 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
+# =============================================================================
+# CONFIGURAÇÕES DE SEO
+# =============================================================================
+
+# Site ID para sitemaps e framework django.contrib.sites
+SITE_ID = 1

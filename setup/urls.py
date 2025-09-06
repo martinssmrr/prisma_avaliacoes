@@ -29,14 +29,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
-from django.http import HttpResponse
-from artigos.sitemaps import ArtigoSitemap, StaticPagesSitemap
 
-# Configuração dos sitemaps
-sitemaps = {
-    'artigos': ArtigoSitemap,
-    'static': StaticPagesSitemap,
-}
+# Importar sitemaps do SEO
+from seo.sitemaps import sitemaps
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -46,7 +41,7 @@ urlpatterns = [
     
     # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('robots.txt', lambda r: HttpResponse("User-agent: *\nAllow: /\nSitemap: {}/sitemap.xml".format(r.build_absolute_uri('/')[:-1]), content_type="text/plain")),
+    path('', include('seo.urls')),  # Inclui robots.txt, ads.txt, etc.
 ]
 
 # Servir arquivos de media em desenvolvimento

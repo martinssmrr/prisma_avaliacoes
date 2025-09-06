@@ -1,0 +1,59 @@
+{% load seo_tags %}
+<!-- ========== SEO META TAGS ========== -->
+
+<!-- Basic Meta Tags -->
+<title>{{ seo.title }}</title>
+<meta name="description" content="{{ seo.description }}">
+{% if seo.keywords %}<meta name="keywords" content="{{ seo.keywords }}">{% endif %}
+<meta name="author" content="{{ config.organization_name }}">
+<meta name="robots" content="{{ seo.robots }}">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ seo.canonical_url }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ seo.og_type }}">
+<meta property="og:url" content="{{ seo.canonical_url }}">
+<meta property="og:title" content="{{ seo.og_title }}">
+<meta property="og:description" content="{{ seo.og_description }}">
+<meta property="og:site_name" content="{{ config.site_name }}">
+<meta property="og:locale" content="pt_BR">
+{% if seo.og_image %}<meta property="og:image" content="{{ seo.og_image }}">
+<meta property="og:image:alt" content="{{ seo.og_title }}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">{% endif %}
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="{{ seo.twitter_card }}">
+<meta name="twitter:url" content="{{ seo.canonical_url }}">
+<meta name="twitter:title" content="{{ seo.twitter_title }}">
+<meta name="twitter:description" content="{{ seo.twitter_description }}">
+{% if seo.twitter_image %}<meta name="twitter:image" content="{{ seo.twitter_image }}">
+<meta name="twitter:image:alt" content="{{ seo.twitter_title }}">{% endif %}
+
+<!-- Additional Meta Tags -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Site Verification Tags -->
+{% site_verification_tags %}
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<!-- DNS Prefetch -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+
+<!-- Schema.org JSON-LD -->
+{% organization_schema %}
+{% if seo.schema_markup %}{{ seo.schema_markup }}{% endif %}
+
+<!-- ========== END SEO META TAGS ========== -->

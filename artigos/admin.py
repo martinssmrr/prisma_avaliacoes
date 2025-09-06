@@ -8,6 +8,9 @@ from django.urls import reverse
 from django.utils import timezone
 from .models import Artigo, Categoria
 
+# Importar inline do SEO
+from seo.admin import SEOMetaInline
+
 
 @admin.register(Artigo)
 class ArtigoAdmin(admin.ModelAdmin):
@@ -74,6 +77,9 @@ class ArtigoAdmin(admin.ModelAdmin):
     
     # Preenchimento automático do slug
     prepopulated_fields = {'slug': ('titulo',)}
+    
+    # Adicionar inline do SEO
+    inlines = [SEOMetaInline]
     
     # Ações personalizadas
     actions = ['publicar_artigos', 'despublicar_artigos']
