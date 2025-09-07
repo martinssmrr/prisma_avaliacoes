@@ -1,0 +1,151 @@
+{% comment %}
+Template para JSON-LD Schema.org
+Geração de dados estruturados para SEO
+{% endcomment %}
+
+{% if seo_config %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{{ seo_config.organization_name|default:seo_config.site_name }}",
+  "url": "https://{{ seo_config.site_domain }}",
+  "description": "{{ seo_config.site_description }}",
+  {% if seo_config.organization_logo %}
+  "logo": "{{ request.build_absolute_uri:seo_config.organization_logo.url }}",
+  {% endif %}
+  {% if seo_config.organization_phone %}
+  "telephone": "{{ seo_config.organization_phone }}",
+  {% endif %}
+  {% if seo_config.organization_email %}
+  "email": "{{ seo_config.organization_email }}",
+  {% endif %}
+  {% if seo_config.organization_address %}
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ seo_config.organization_address }}"
+  },
+  {% endif %}
+  "sameAs": [
+    "https://{{ seo_config.site_domain }}"
+  ]
+}
+</script>
+{% endif %}
+
+{% comment %}
+JSON-LD específico para página (se disponível)
+{% endcomment %}
+{% if seo_meta and seo_meta.content_object %}
+    {% with obj=seo_meta.content_object %}
+        {% if obj.class_name == 'Artigo' %}
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "{{ seo_meta.get_title }}",
+          "description": "{{ seo_meta.get_description }}",
+          "author": {
+            "@type": "Organization",
+            "name": "{{ seo_config.organization_name|default:seo_config.site_name }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "{{ seo_config.organization_name|default:seo_config.site_name }}",
+            "url": "https://{{ seo_config.site_domain }}"
+            {% if seo_config.organization_logo %}
+            ,"logo": {
+              "@type": "ImageObject",
+              "url": "{{ request.build_absolute_uri:seo_config.organization_logo.url }}"
+            }
+            {% endif %}
+          },
+          {% if obj.data_publicacao %}
+          "datePublished": "{{ obj.data_publicacao|date:'c' }}",
+          {% endif %}
+          {% if obj.data_atualizacao %}
+          "dateModified": "{{ obj.data_atualizacao|date:'c' }}",
+          {% endif %}
+          {% if seo_meta.og_image %}
+          "image": "{{ request.build_absolute_uri:seo_meta.og_image.url }}",
+          {% endif %}
+          "url": "{{ request.build_absolute_uri:request.get_full_path }}"
+        }
+        </script>
+        {% endif %}
+        
+        {% if obj.class_name == 'Venda' or obj.class_name == 'Cliente' %}
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "{{ seo_meta.get_title }}",
+          "description": "{{ seo_meta.get_description }}",
+          "provider": {
+            "@type": "Organization",
+            "name": "{{ seo_config.organization_name|default:seo_config.site_name }}",
+            "url": "https://{{ seo_config.site_domain }}"
+          },
+          "areaServed": "Minas Gerais, Brasil",
+          "serviceType": "Avaliação Imobiliária"
+        }
+        </script>
+        {% endif %}
+    {% endwith %}
+{% endif %}
+
+{% comment %}
+JSON-LD para WebSite com SearchAction
+{% endcomment %}
+{% if seo_config %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{ seo_config.site_name }}",
+  "url": "https://{{ seo_config.site_domain }}",
+  "description": "{{ seo_config.site_description }}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://{{ seo_config.site_domain }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{% endif %}
+
+{% comment %}
+JSON-LD para LocalBusiness (se aplicável)
+{% endcomment %}
+{% if seo_config and seo_config.organization_address and seo_config.organization_phone %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ seo_config.organization_name|default:seo_config.site_name }}",
+  "description": "{{ seo_config.site_description }}",
+  "url": "https://{{ seo_config.site_domain }}",
+  {% if seo_config.organization_phone %}
+  "telephone": "{{ seo_config.organization_phone }}",
+  {% endif %}
+  {% if seo_config.organization_email %}
+  "email": "{{ seo_config.organization_email }}",
+  {% endif %}
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ seo_config.organization_address }}"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "-19.9208",
+    "longitude": "-43.9378"
+  },
+  "priceRange": "$$",
+  "currenciesAccepted": "BRL",
+  "paymentAccepted": "Cash, Credit Card, Debit Card, Bank Transfer"
+}
+</script>
+{% endif %}

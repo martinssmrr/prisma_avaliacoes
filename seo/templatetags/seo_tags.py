@@ -408,3 +408,86 @@ def google_tag_manager_body():
     except:
         pass
     return mark_safe('')
+
+
+@register.inclusion_tag('seo/seo_head.html', takes_context=True)
+def render_seo_meta(context, obj=None, include_json_ld=True):
+    """
+    Renderiza todas as meta tags SEO usando o template seo_head.html
+    
+    Uso: {% render_seo_meta object %}
+    """
+    request = context['request']
+    
+    # Obter configuração global
+    try:
+        seo_config = SEOConfig.get_config()
+    except:
+        seo_config = None
+    
+    # Obter SEO Meta específico para o objeto
+    seo_meta = None
+    if obj:
+        try:
+            content_type = ContentType.objects.get_for_model(obj)
+            seo_meta = SEOMeta.objects.filter(
+                content_type=content_type,
+                object_id=obj.pk
+            ).first()
+        except:
+            pass
+    
+    return {
+        'request': request,
+        'seo_meta': seo_meta,
+        'seo_config': seo_config,
+        'include_json_ld': include_json_ld,
+    }
+
+
+@register.simple_tag
+def get_seo_config():
+    """
+    Retorna a configuração global de SEO
+    
+    Uso: {% get_seo_config as config %}
+    """
+    try:
+        return SEOConfig.get_config()
+    except:
+        return None
+
+
+@register.inclusion_tag('seo/json_ld.html', takes_context=True)
+def render_json_ld(context, obj=None):
+    """
+    Renderiza dados estruturados JSON-LD
+    
+    Uso: {% render_json_ld object %}
+    """
+    request = context['request']
+    
+    # Obter configuração global
+    try:
+        seo_config = SEOConfig.get_config()
+    except:
+        seo_config = None
+    
+    # Obter SEO Meta específico para o objeto
+    seo_meta = None
+    if obj:
+        try:
+            content_type = ContentType.objects.get_for_model(obj)
+            seo_meta = SEOMeta.objects.filter(
+                content_type=content_type,
+                object_id=obj.pk
+            ).first()
+        except:
+            pass
+    
+    return {
+        'request': request,
+        'seo_meta': seo_meta,
+        'seo_config': seo_config,
+        'obj': obj,
+    }

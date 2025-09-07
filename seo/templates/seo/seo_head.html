@@ -1,0 +1,140 @@
+{% comment %}
+Template principal para renderizar meta tags SEO
+Uso: {% load seo_tags %}{% render_seo_meta %}
+{% endcomment %}
+{% load static %}
+
+{# Meta tags básicas #}
+{% if seo_meta %}
+    <title>{{ seo_meta.get_title }}</title>
+    <meta name="description" content="{{ seo_meta.get_description }}">
+    {% if seo_meta.keywords %}
+        <meta name="keywords" content="{{ seo_meta.keywords }}">
+    {% endif %}
+    {% if seo_meta.canonical_url %}
+        <link rel="canonical" href="{{ seo_meta.canonical_url }}">
+    {% endif %}
+{% else %}
+    {# Fallback para configuração global #}
+    {% if seo_config %}
+        <title>{{ seo_config.site_name }}</title>
+        <meta name="description" content="{{ seo_config.site_description }}">
+        <meta name="keywords" content="{{ seo_config.default_keywords }}">
+    {% endif %}
+{% endif %}
+
+{# Meta tags de robots #}
+{% if seo_meta %}
+    <meta name="robots" content="{{ seo_meta.get_robots_content }}">
+{% else %}
+    <meta name="robots" content="index, follow">
+{% endif %}
+
+{# Open Graph tags #}
+{% if seo_meta %}
+    <meta property="og:title" content="{{ seo_meta.get_og_title }}">
+    <meta property="og:description" content="{{ seo_meta.get_og_description }}">
+    <meta property="og:type" content="{{ seo_meta.og_type }}">
+    {% if seo_meta.og_image %}
+        <meta property="og:image" content="{{ request.build_absolute_uri:seo_meta.og_image.url }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+    {% elif seo_config.default_og_image %}
+        <meta property="og:image" content="{{ request.build_absolute_uri:seo_config.default_og_image.url }}">
+    {% endif %}
+    <meta property="og:url" content="{{ request.build_absolute_uri:request.get_full_path }}">
+{% elif seo_config %}
+    <meta property="og:title" content="{{ seo_config.site_name }}">
+    <meta property="og:description" content="{{ seo_config.site_description }}">
+    <meta property="og:type" content="website">
+    {% if seo_config.default_og_image %}
+        <meta property="og:image" content="{{ request.build_absolute_uri:seo_config.default_og_image.url }}">
+    {% endif %}
+    <meta property="og:url" content="{{ request.build_absolute_uri:request.get_full_path }}">
+{% endif %}
+
+{# Twitter Card tags #}
+{% if seo_meta %}
+    <meta name="twitter:card" content="{{ seo_meta.twitter_card }}">
+    <meta name="twitter:title" content="{{ seo_meta.get_twitter_title }}">
+    <meta name="twitter:description" content="{{ seo_meta.get_twitter_description }}">
+    {% if seo_meta.twitter_image %}
+        <meta name="twitter:image" content="{{ request.build_absolute_uri:seo_meta.twitter_image.url }}">
+    {% elif seo_meta.og_image %}
+        <meta name="twitter:image" content="{{ request.build_absolute_uri:seo_meta.og_image.url }}">
+    {% elif seo_config.default_og_image %}
+        <meta name="twitter:image" content="{{ request.build_absolute_uri:seo_config.default_og_image.url }}">
+    {% endif %}
+{% elif seo_config %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_config.site_name }}">
+    <meta name="twitter:description" content="{{ seo_config.site_description }}">
+    {% if seo_config.default_og_image %}
+        <meta name="twitter:image" content="{{ request.build_absolute_uri:seo_config.default_og_image.url }}">
+    {% endif %}
+{% endif %}
+
+{# Viewport e outros meta tags importantes #}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+
+{# Meta tags de verificação #}
+{% if seo_config %}
+    {% if seo_config.google_search_console_id %}
+        <meta name="google-site-verification" content="{{ seo_config.google_search_console_id }}">
+    {% endif %}
+    {% if seo_config.bing_webmaster_id %}
+        <meta name="msvalidate.01" content="{{ seo_config.bing_webmaster_id }}">
+    {% endif %}
+{% endif %}
+
+{# Favicons e ícones #}
+<link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+<link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
+
+{# Schema.org JSON-LD #}
+{% if include_json_ld %}
+    {% include 'seo/json_ld.html' %}
+{% endif %}
+
+{# Analytics e tracking codes #}
+{% if seo_config %}
+    {% if seo_config.google_analytics_id %}
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ seo_config.google_analytics_id }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ seo_config.google_analytics_id }}');
+        </script>
+    {% endif %}
+    
+    {% if seo_config.google_tag_manager_id %}
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','{{ seo_config.google_tag_manager_id }}');</script>
+    {% endif %}
+    
+    {% if seo_config.facebook_pixel_id %}
+        <!-- Facebook Pixel -->
+        <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '{{ seo_config.facebook_pixel_id }}');
+            fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id={{ seo_config.facebook_pixel_id }}&ev=PageView&noscript=1"
+        /></noscript>
+    {% endif %}
+{% endif %}
