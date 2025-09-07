@@ -97,16 +97,46 @@ WSGI_APPLICATION = "setup.wsgi.application"
 # CONFIGURAÇÃO DO BANCO DE DADOS
 # =============================================================================
 
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
-        'USER': config('DB_USER', default=''),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default=''),
-        'PORT': config('DB_PORT', default=''),
+# Configuração robusta do banco de dados
+try:
+    db_engine = config('DB_ENGINE', default='django.db.backends.sqlite3')
+    db_name = config('DB_NAME', default='db.sqlite3')
+    
+    # Garantir que ENGINE nunca seja vazio ou None
+    if not db_engine or db_engine.strip() == '':
+        db_engine = 'django.db.backends.sqlite3'
+    
+    # Se db_name for um caminho relativo, converter para absoluto
+    if db_engine == 'django.db.backends.sqlite3':
+        if not os.path.isabs(str(db_name)):
+            db_name = BASE_DIR / db_name
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': db_engine,
+            'NAME': db_name,
+            'USER': config('DB_USER', default=''),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default=''),
+            'PORT': config('DB_PORT', default=''),
+        }
     }
-}
+    
+    # Validação adicional para garantir que ENGINE está presente
+    if not DATABASES['default']['ENGINE']:
+        DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+        DATABASES['default']['NAME'] = BASE_DIR / 'db.sqlite3'
+        
+except Exception as e:
+    # Fallback para configuração SQLite simples se houver erro com decouple
+    print(f"Erro ao carregar configurações do .env: {e}")
+    print("Usando configuração SQLite padrão...")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
