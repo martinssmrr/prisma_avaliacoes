@@ -20,28 +20,32 @@ def render_seo(context, obj=None):
     Uso: {% render_seo object %}
     """
     request = context['request']
-    seo_config = SEOConfig.get_config()
+    try:
+        seo_config = SEOConfig.get_config()
+    except:
+        # Fallback se não houver configuração
+        seo_config = None
     
     # Dados padrão
     seo_data = {
-        'title': seo_config.site_name,
-        'description': seo_config.site_description,
-        'keywords': seo_config.default_keywords,
+        'title': seo_config.site_name if seo_config else 'Prisma Avaliações Imobiliárias',
+        'description': seo_config.site_description if seo_config else 'Avaliações imobiliárias profissionais',
+        'keywords': seo_config.default_keywords if seo_config else 'avaliação imobiliária',
         'canonical_url': request.build_absolute_uri(),
         'robots': 'index, follow',
-        'og_title': seo_config.site_name,
-        'og_description': seo_config.site_description,
+        'og_title': seo_config.site_name if seo_config else 'Prisma Avaliações Imobiliárias',
+        'og_description': seo_config.site_description if seo_config else 'Avaliações imobiliárias profissionais',
         'og_type': 'website',
         'og_image': None,
         'twitter_card': 'summary_large_image',
-        'twitter_title': seo_config.site_name,
-        'twitter_description': seo_config.site_description,
+        'twitter_title': seo_config.site_name if seo_config else 'Prisma Avaliações Imobiliárias',
+        'twitter_description': seo_config.site_description if seo_config else 'Avaliações imobiliárias profissionais',
         'twitter_image': None,
         'schema_markup': '',
     }
     
     # Adicionar imagem padrão se existir
-    if seo_config.default_og_image:
+    if seo_config and seo_config.default_og_image:
         seo_data['og_image'] = request.build_absolute_uri(seo_config.default_og_image.url)
         seo_data['twitter_image'] = seo_data['og_image']
     
@@ -325,3 +329,82 @@ def site_verification_tags():
         tags.append(f'<meta name="msvalidate.01" content="{config.bing_webmaster_id}">')
     
     return mark_safe('\n'.join(tags))
+
+
+# Template tags adicionais que podem ser chamados
+@register.simple_tag
+def seo_meta_tags():
+    """Template tag simplificado para meta tags básicas"""
+    try:
+        config = SEOConfig.get_config()
+        return mark_safe(f'''
+        <meta name="description" content="{config.site_description}">
+        <meta name="keywords" content="{config.default_keywords}">
+        <meta name="author" content="{config.organization_name}">
+        ''')
+    except:
+        return mark_safe('')
+
+
+@register.simple_tag
+def schema_org_data():
+    """Template tag para dados estruturados Schema.org"""
+    try:
+        config = SEOConfig.get_config()
+        schema = config.get_organization_schema()
+        return mark_safe(f'<script type="application/ld+json">{schema}</script>')
+    except:
+        return mark_safe('')
+
+
+@register.simple_tag
+def google_analytics():
+    """Template tag para Google Analytics"""
+    try:
+        config = SEOConfig.get_config()
+        if config.google_analytics_id:
+            return mark_safe(f'''
+            <script async src="https://www.googletagmanager.com/gtag/js?id={config.google_analytics_id}"></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){{dataLayer.push(arguments);}}
+              gtag('js', new Date());
+              gtag('config', '{config.google_analytics_id}');
+            </script>
+            ''')
+    except:
+        pass
+    return mark_safe('')
+
+
+@register.simple_tag
+def google_tag_manager():
+    """Template tag para Google Tag Manager"""
+    try:
+        config = SEOConfig.get_config()
+        if config.google_tag_manager_id:
+            return mark_safe(f'''
+            <script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':
+            new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            }})(window,document,'script','dataLayer','{config.google_tag_manager_id}');</script>
+            ''')
+    except:
+        pass
+    return mark_safe('')
+
+
+@register.simple_tag
+def google_tag_manager_body():
+    """Template tag para Google Tag Manager (body)"""
+    try:
+        config = SEOConfig.get_config()
+        if config.google_tag_manager_id:
+            return mark_safe(f'''
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={config.google_tag_manager_id}"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            ''')
+    except:
+        pass
+    return mark_safe('')
