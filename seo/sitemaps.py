@@ -13,26 +13,50 @@ class StaticPagesSitemap(Sitemap):
     """
     protocol = 'https'
     
+    def get_config(self):
+        """Obter configuração SEO"""
+        try:
+            return SEOConfig.get_config()
+        except:
+            return None
+    
     def items(self):
-        """URLs estáticas do site"""
-        return [
+        """URLs estáticas do site - apenas URLs que existem"""
+        valid_items = []
+        
+        # Lista de URLs para testar
+        test_items = [
             {'url_name': 'home', 'priority': 1.0, 'changefreq': 'daily'},
-            {'url_name': 'sobre', 'priority': 0.8, 'changefreq': 'monthly'},
-            {'url_name': 'servicos', 'priority': 0.9, 'changefreq': 'monthly'},
-            {'url_name': 'contato', 'priority': 0.8, 'changefreq': 'monthly'},
             {'url_name': 'artigos:lista', 'priority': 0.9, 'changefreq': 'daily'},
         ]
+        
+        for item in test_items:
+            try:
+                # Testar se a URL pode ser resolvida
+                url = reverse(item['url_name'])
+                if url:
+                    valid_items.append(item)
+            except:
+                # Pular URLs que não podem ser resolvidas
+                continue
+                
+        return valid_items
     
     def location(self, item):
         try:
-            return reverse(item['url_name'])
+            url = reverse(item['url_name'])
+            return url
         except:
-            return '/'
+            # Se não conseguir resolver a URL, retornar None para pular
+            return None
     
     def priority(self, item):
         return item.get('priority', 0.5)
     
     def changefreq(self, item):
+        config = self.get_config()
+        if config:
+            return config.sitemap_changefreq
         return item.get('changefreq', 'monthly')
 
 
@@ -45,11 +69,29 @@ class ArtigosSitemap(Sitemap):
     protocol = 'https'
     
     def items(self):
-        """Retorna todos os artigos publicados"""
+        """Retorna todos os artigos publicados com slugs válidos"""
         try:
             # Tenta importar o modelo Artigo
             Artigo = apps.get_model('artigos', 'Artigo')
-            return Artigo.objects.filter(publicado=True).order_by('-data_publicacao')
+            # Filtrar apenas artigos com slug válido e não vazio
+            artigos = Artigo.objects.filter(
+                publicado=True,
+                slug__isnull=False
+            ).exclude(
+                slug__exact=''
+            ).order_by('-data_publicacao')
+            
+            # Validar que cada artigo tem get_absolute_url funcionando
+            valid_artigos = []
+            for artigo in artigos:
+                try:
+                    url = artigo.get_absolute_url()
+                    if url and url != '/' and '/blog/' in url:
+                        valid_artigos.append(artigo)
+                except:
+                    continue
+            
+            return valid_artigos
         except:
             # Se o modelo não existir, retorna lista vazia
             return []
@@ -60,19 +102,29 @@ class ArtigosSitemap(Sitemap):
     
     def location(self, obj):
         """URL do artigo"""
-        if hasattr(obj, 'get_absolute_url'):
-            return obj.get_absolute_url()
-        return f'/artigos/{obj.slug}/'
+        try:
+            if hasattr(obj, 'get_absolute_url'):
+                return obj.get_absolute_url()
+            # Fallback para URL padrão
+            return f'/blog/{obj.slug}/'
+        except:
+            return None
     
     def changefreq(self, obj):
-        """Frequência de mudança baseada na idade do artigo"""
-        config = SEOConfig.get_config()
-        return config.sitemap_changefreq
+        """Frequência de mudança baseada na configuração"""
+        try:
+            config = SEOConfig.get_config()
+            return config.sitemap_changefreq
+        except:
+            return 'weekly'
     
     def priority(self, obj):
-        """Prioridade baseada na data de publicação"""
-        config = SEOConfig.get_config()
-        return float(config.sitemap_priority)
+        """Prioridade baseada na configuração"""
+        try:
+            config = SEOConfig.get_config()
+            return float(config.sitemap_priority)
+        except:
+            return 0.8
 
 
 class SEOSitemap(Sitemap):
@@ -84,13 +136,21 @@ class SEOSitemap(Sitemap):
     protocol = 'https'
     
     def items(self):
-        """Retorna objetos que têm SEO configurado"""
+        """Retorna objetos que têm SEO configurado e URLs válidas"""
         from .models import SEOMeta
         
         seo_objects = []
         for seo_meta in SEOMeta.objects.filter(noindex=False):
-            if seo_meta.content_object and hasattr(seo_meta.content_object, 'get_absolute_url'):
-                seo_objects.append(seo_meta.content_object)
+            try:
+                obj = seo_meta.content_object
+                if obj and hasattr(obj, 'get_absolute_url'):
+                    # Verificar se a URL é válida antes de adicionar
+                    url = obj.get_absolute_url()
+                    if url and url != '/':
+                        seo_objects.append(obj)
+            except:
+                # Pular objetos com problemas
+                continue
         
         return seo_objects
     
@@ -107,16 +167,36 @@ class SEOSitemap(Sitemap):
             )
             return seo_meta.updated_at
         except SEOMeta.DoesNotExist:
-            return None
+            return getattr(obj, 'updated_at', getattr(obj, 'data_atualizacao', None))
     
     def location(self, obj):
         """URL do objeto"""
-        return obj.get_absolute_url()
+        try:
+            return obj.get_absolute_url()
+        except:
+            return None
+    
+    def changefreq(self, obj):
+        """Frequência baseada na configuração"""
+        try:
+            config = SEOConfig.get_config()
+            return config.sitemap_changefreq
+        except:
+            return 'weekly'
+    
+    def priority(self, obj):
+        """Prioridade baseada na configuração"""
+        try:
+            config = SEOConfig.get_config()
+            return float(config.sitemap_priority)
+        except:
+            return 0.7
 
 
 # Dicionário de sitemaps para usar em urls.py
+# Comentar temporariamente sitemaps problemáticos para depuração
 sitemaps = {
     'static': StaticPagesSitemap,
     'artigos': ArtigosSitemap,
-    'seo': SEOSitemap,
+    # 'seo': SEOSitemap,  # Temporariamente desabilitado
 }

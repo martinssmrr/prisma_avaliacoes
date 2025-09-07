@@ -30,8 +30,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 
-# Importar sitemaps do SEO
-from seo.sitemaps import sitemaps
+# Importar sitemaps do SEO - Temporariamente usando sitemap simples
+# from seo.sitemaps import sitemaps
+from simple_sitemap import sitemaps_simple as sitemaps
 
 urlpatterns = [
     path("admin/", admin.site.urls),
