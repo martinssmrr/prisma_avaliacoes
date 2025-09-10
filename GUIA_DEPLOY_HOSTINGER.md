@@ -57,6 +57,9 @@ cd /var/www/html/prismaavaliacoes.com.br
 cp -r . ../backup_$(date +%Y%m%d_%H%M%S)
 
 # 4. Atualizar código
+# Corrigir problema de ownership do Git
+git config --global --add safe.directory /var/www/html/prismaavaliacoes.com.br
+
 git fetch origin master
 git reset --hard origin/master
 
@@ -141,6 +144,20 @@ Após a execução, verificar estas URLs:
 ✅ **Tags canonical** no código fonte das páginas  
 
 ## 🔧 RESOLUÇÃO DE PROBLEMAS
+
+### Se encontrar erro "dubious ownership in repository":
+```bash
+# Erro completo:
+# fatal: detected dubious ownership in repository at '/var/www/html/prismaavaliacoes.com.br'
+
+# SOLUÇÃO:
+git config --global --add safe.directory /var/www/html/prismaavaliacoes.com.br
+
+# Ou usar script de correção:
+wget https://raw.githubusercontent.com/martinssmrr/prisma_avaliacoes/master/corrigir_git_ownership.sh
+chmod +x corrigir_git_ownership.sh
+./corrigir_git_ownership.sh
+```
 
 ### Se o admin SEO não aparecer:
 ```bash

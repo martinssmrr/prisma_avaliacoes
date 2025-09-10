@@ -89,6 +89,10 @@ echo '✅ Backup criado'
 # 2. Atualizar código
 echo '📥 2. Atualizando código...'
 cd "\$SERVER_PATH"
+
+# Corrigir problema de ownership do Git
+git config --global --add safe.directory /var/www/html/prismaavaliacoes.com.br
+
 git fetch origin master
 git reset --hard origin/master
 echo '✅ Código atualizado'

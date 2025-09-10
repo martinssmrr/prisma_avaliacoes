@@ -32,6 +32,10 @@ cd "$SERVER_PATH"
 # Verificar se é um repositório git
 if [ -d ".git" ]; then
     echo "🔄 Atualizando repositório existente..."
+    
+    # Corrigir problema de ownership do Git
+    git config --global --add safe.directory /var/www/html/prismaavaliacoes.com.br
+    
     git fetch origin master
     git reset --hard origin/master
     echo "✅ Código atualizado via Git"
