@@ -4,10 +4,12 @@
 URL retorna 404: https://prismaavaliacoes.com.br/admin/seo/
 Erro: `django.contrib.admin.sites.catch_all_view`
 
-## ⚡ CORREÇÃO RÁPIDA (Uma linha)
+## ⚡ CORREÇÃO RÁPIDA (Apenas Migração)
+
+Como a pasta SEO já existe, execute apenas a migração:
 
 ```bash
-ssh root@srv989739.hstgr.cloud "cd /var/www/html/prismaavaliacoes.com.br && source venv/bin/activate && python manage.py shell --settings=setup.settings -c \"from django.conf import settings; print('SEO em INSTALLED_APPS:', 'seo' in settings.INSTALLED_APPS)\" && systemctl restart gunicorn"
+ssh root@srv989739.hstgr.cloud "cd /var/www/html/prismaavaliacoes.com.br && source venv/bin/activate && python manage.py makemigrations seo --settings=setup.settings && python manage.py migrate --settings=setup.settings && systemctl restart gunicorn"
 ```
 
 ## 🔧 CORREÇÃO COMPLETA
@@ -20,30 +22,24 @@ chmod +x corrigir_seo_404.sh
 ./corrigir_seo_404.sh
 ```
 
-### Opção 2: Comandos manuais
+### Opção 2: Comandos passo a passo (Só migração)
 ```bash
 ssh root@srv989739.hstgr.cloud
 cd /var/www/html/prismaavaliacoes.com.br
 source venv/bin/activate
 
-# 1. Verificar se SEO está em INSTALLED_APPS
-python manage.py shell --settings=setup.settings -c "
-from django.conf import settings
-print('INSTALLED_APPS:')
-for app in settings.INSTALLED_APPS:
-    print('  -', app)
-print('SEO presente:', 'seo' in settings.INSTALLED_APPS)
-"
+# 1. Criar migrações SEO
+python manage.py makemigrations seo --settings=setup.settings
 
-# 2. Se não estiver, adicionar
-grep -q "seo" setup/settings.py || echo "PROBLEMA: SEO não está em INSTALLED_APPS"
-
-# 3. Aplicar migrações
+# 2. Aplicar migrações
 python manage.py migrate --settings=setup.settings
 
-# 4. Reiniciar serviços
+# 3. Reiniciar serviços
 systemctl restart gunicorn
 systemctl reload nginx
+
+# 4. Verificar se funcionou
+curl -s -o /dev/null -w "%{http_code}" https://prismaavaliacoes.com.br/admin/seo/
 ```
 
 ## 🧪 VERIFICAÇÃO RÁPIDA
