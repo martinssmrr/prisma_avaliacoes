@@ -4,22 +4,26 @@
 URL retorna 404: https://prismaavaliacoes.com.br/admin/seo/
 Erro: `django.contrib.admin.sites.catch_all_view`
 
-## ⚡ CORREÇÃO RÁPIDA (Apenas Migração)
+## ⚡ CORREÇÃO RÁPIDA (PowerShell Windows)
 
-Como a pasta SEO já existe, execute apenas a migração:
+Execute este comando no PowerShell:
 
-```bash
+```powershell
 ssh root@srv989739.hstgr.cloud "cd /var/www/html/prismaavaliacoes.com.br && source venv/bin/activate && python manage.py makemigrations seo --settings=setup.settings && python manage.py migrate --settings=setup.settings && systemctl restart gunicorn"
+```
+
+Se não funcionar, problema pode ser no INSTALLED_APPS:
+
+```powershell
+ssh root@srv989739.hstgr.cloud "cd /var/www/html/prismaavaliacoes.com.br && source venv/bin/activate && grep -n 'seo' setup/settings.py || echo 'SEO não encontrado em settings'"
 ```
 
 ## 🔧 CORREÇÃO COMPLETA
 
-### Opção 1: Script automático
-```bash
-ssh root@srv989739.hstgr.cloud
-wget https://raw.githubusercontent.com/martinssmrr/prisma_avaliacoes/master/corrigir_seo_404.sh
-chmod +x corrigir_seo_404.sh
-./corrigir_seo_404.sh
+### Opção 1: Script via PowerShell
+```powershell
+# Baixar e executar script de correção via PowerShell
+ssh root@srv989739.hstgr.cloud "wget https://raw.githubusercontent.com/martinssmrr/prisma_avaliacoes/master/migrar_seo_apenas.sh -O migrar_seo.sh && chmod +x migrar_seo.sh && ./migrar_seo.sh"
 ```
 
 ### Opção 2: Comandos passo a passo (Só migração)
