@@ -1,5 +1,5 @@
 # =============================================================================
-# REQUIREMENTS.TXT - PRISMA AVALIAÇÕES (PRODUÇÃO HOSTGATOR)
+# REQUIREMENTS.TXT - PRISMA AVALIAÇÕES (PRODUÇÃO VPS HOSTINGER)
 # =============================================================================
 
 # Django Framework
@@ -11,12 +11,18 @@ django-jazzmin==3.0.1
 # Banco de Dados
 psycopg2-binary==2.9.9
 
+# Servidor WSGI
+gunicorn==21.2.0
+
 # Timezone Support
 pytz==2023.3
 
 # Utilities
 Pillow==10.4.0
 python-decouple==3.8
+
+# Segurança e Performance
+whitenoise==6.6.0
 
 # Security
 cryptography==41.0.7
