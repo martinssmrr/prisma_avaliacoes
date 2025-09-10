@@ -13,19 +13,15 @@ apt update && apt upgrade -y
 
 echo "2. INSTALANDO DEPENDÊNCIAS DO SISTEMA:"
 apt install -y python3 python3-pip python3-venv python3-dev
-apt install -y nginx postgresql postgresql-contrib
+apt install -y nginx sqlite3
 apt install -y git curl wget
-apt install -y build-essential libpq-dev
+apt install -y build-essential
 apt install -y certbot python3-certbot-nginx
 
-echo "3. CONFIGURANDO POSTGRESQL:"
-systemctl start postgresql
-systemctl enable postgresql
-
-# Criar usuário e banco de dados
-sudo -u postgres psql -c "CREATE USER prisma_user WITH PASSWORD 'prisma_2024_secure';"
-sudo -u postgres psql -c "CREATE DATABASE prisma_db OWNER prisma_user;"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE prisma_db TO prisma_user;"
+echo "3. PREPARANDO DIRETÓRIO PARA BANCO SQLITE:"
+mkdir -p /var/lib/sqlite
+chown www-data:www-data /var/lib/sqlite
+chmod 755 /var/lib/sqlite
 
 echo "4. CLONANDO PROJETO:"
 rm -rf $PROJECT_DIR
@@ -46,8 +42,8 @@ DEBUG=False
 SECRET_KEY=$(python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
 ALLOWED_HOSTS=$DOMAIN,www.$DOMAIN,127.0.0.1,localhost
 
-# Database
-DATABASE_URL=postgresql://prisma_user:prisma_2024_secure@localhost:5432/prisma_db
+# Database SQLite
+DATABASE_PATH=/var/lib/sqlite/prisma_db.sqlite3
 
 # Security
 SECURE_SSL_REDIRECT=True
@@ -55,14 +51,26 @@ SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO,https
 CSRF_TRUSTED_ORIGINS=https://$DOMAIN,https://www.$DOMAIN
 EOF
 
-echo "8. EXECUTANDO MIGRAÇÕES:"
+echo "8. COPIANDO BANCO DE DADOS SQLITE DO LOCALHOST:"
+# Se existe db.sqlite3 local, copia para produção
+if [ -f "db.sqlite3" ]; then
+    echo "Copiando banco SQLite existente..."
+    cp db.sqlite3 /var/lib/sqlite/prisma_db.sqlite3
+    chown www-data:www-data /var/lib/sqlite/prisma_db.sqlite3
+    chmod 664 /var/lib/sqlite/prisma_db.sqlite3
+    echo "✓ Banco SQLite copiado com sucesso"
+else
+    echo "Banco SQLite não encontrado, criando novo..."
+fi
+
+echo "9. EXECUTANDO MIGRAÇÕES:"
 python manage.py makemigrations
 python manage.py migrate
 
-echo "9. COLETANDO ARQUIVOS ESTÁTICOS:"
+echo "10. COLETANDO ARQUIVOS ESTÁTICOS:"
 python manage.py collectstatic --noinput
 
-echo "10. CRIANDO SUPERUSUÁRIO:"
+echo "11. CRIANDO SUPERUSUÁRIO (se não existir):"
 python manage.py shell -c "
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -73,11 +81,14 @@ else:
     print('Superusuário já existe')
 "
 
-echo "11. CONFIGURANDO PERMISSÕES:"
+echo "12. CONFIGURANDO PERMISSÕES:"
 chown -R www-data:www-data $PROJECT_DIR
 chmod -R 755 $PROJECT_DIR
+# Permissões especiais para o banco SQLite
+chown www-data:www-data /var/lib/sqlite/prisma_db.sqlite3
+chmod 664 /var/lib/sqlite/prisma_db.sqlite3
 
-echo "12. CONFIGURANDO GUNICORN SERVICE:"
+echo "13. CONFIGURANDO GUNICORN SERVICE:"
 cat > /etc/systemd/system/gunicorn.service << EOF
 [Unit]
 Description=Gunicorn daemon for Prisma Avaliações
@@ -95,12 +106,12 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF
 
-echo "13. INICIANDO GUNICORN:"
+echo "14. INICIANDO GUNICORN:"
 systemctl daemon-reload
 systemctl start gunicorn
 systemctl enable gunicorn
 
-echo "14. CONFIGURANDO NGINX:"
+echo "15. CONFIGURANDO NGINX:"
 cat > /etc/nginx/sites-available/$PROJECT_NAME << EOF
 server {
     listen 80;
@@ -127,25 +138,29 @@ EOF
 ln -sf /etc/nginx/sites-available/$PROJECT_NAME /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 
-echo "15. TESTANDO E INICIANDO NGINX:"
+echo "16. TESTANDO E INICIANDO NGINX:"
 nginx -t
 systemctl restart nginx
 systemctl enable nginx
 
-echo "16. CONFIGURANDO SSL (CERTBOT):"
+echo "17. CONFIGURANDO SSL (CERTBOT):"
 certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos --email admin@$DOMAIN
 
-echo "17. CONFIGURANDO FIREWALL:"
+echo "18. CONFIGURANDO FIREWALL:"
 ufw allow OpenSSH
 ufw allow 'Nginx Full'
 ufw --force enable
 
-echo "18. VERIFICANDO STATUS DOS SERVIÇOS:"
+echo "19. VERIFICANDO STATUS DOS SERVIÇOS:"
 systemctl status gunicorn --no-pager
 systemctl status nginx --no-pager
-systemctl status postgresql --no-pager
 
-echo "19. TESTE FINAL:"
+echo "20. VERIFICANDO BANCO SQLITE:"
+ls -la /var/lib/sqlite/prisma_db.sqlite3
+echo "Tabelas no banco:"
+sqlite3 /var/lib/sqlite/prisma_db.sqlite3 ".tables"
+
+echo "21. TESTE FINAL:"
 curl -I http://localhost/ || echo "Site não responde localmente"
 curl -I https://$DOMAIN/ || echo "Site não responde via HTTPS"
 

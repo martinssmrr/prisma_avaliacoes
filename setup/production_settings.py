@@ -10,15 +10,11 @@ DEBUG = False
 SECRET_KEY = config('SECRET_KEY')
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
-# DATABASE
+# DATABASE - SQLite para produção
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='prisma_db'),
-        'USER': config('DB_USER', default='prisma_user'),
-        'PASSWORD': config('DB_PASSWORD', default='prisma_2024_secure'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': config('DATABASE_PATH', default='/var/lib/sqlite/prisma_db.sqlite3'),
     }
 }
 

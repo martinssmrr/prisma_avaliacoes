@@ -6,6 +6,7 @@
 2. **Acesso SSH** ao servidor
 3. **Domínio** configurado apontando para o IP da VPS
 4. **Repositório GitHub** atualizado
+5. **Banco SQLite local** (db.sqlite3) será copiado para produção
 
 ## 🔧 PASSOS DO DEPLOY
 
@@ -52,7 +53,18 @@ certbot --nginx -d prismaavaliacoes.com.br -d www.prismaavaliacoes.com.br
 ```bash
 systemctl status nginx
 systemctl status gunicorn
-systemctl status postgresql
+```
+
+### 2. Verificar Banco SQLite
+```bash
+# Ver arquivo do banco
+ls -la /var/lib/sqlite/prisma_db.sqlite3
+
+# Ver tabelas
+sqlite3 /var/lib/sqlite/prisma_db.sqlite3 ".tables"
+
+# Backup do banco
+cp /var/lib/sqlite/prisma_db.sqlite3 /root/backup_$(date +%Y%m%d).sqlite3
 ```
 
 ### 2. Logs para Debugging
@@ -65,6 +77,9 @@ tail -f /var/log/nginx/error.log
 
 # Logs do Django
 tail -f /var/www/prisma_avaliacoes/logs/django.log
+
+# Verificar permissões do banco SQLite
+ls -la /var/lib/sqlite/
 ```
 
 ### 3. Testes de Conectividade
@@ -102,9 +117,23 @@ python manage.py collectstatic --noinput
 systemctl restart gunicorn
 ```
 
-### Backup do Banco
+### Backup do Banco SQLite
 ```bash
-sudo -u postgres pg_dump prisma_db > backup_$(date +%Y%m%d).sql
+cp /var/lib/sqlite/prisma_db.sqlite3 /root/backup_$(date +%Y%m%d_%H%M).sqlite3
+```
+
+### Restaurar Backup
+```bash
+# Parar serviços
+systemctl stop gunicorn
+
+# Restaurar banco
+cp /root/backup_YYYYMMDD_HHMM.sqlite3 /var/lib/sqlite/prisma_db.sqlite3
+chown www-data:www-data /var/lib/sqlite/prisma_db.sqlite3
+chmod 664 /var/lib/sqlite/prisma_db.sqlite3
+
+# Reiniciar serviços
+systemctl start gunicorn
 ```
 
 ## 🚨 TROUBLESHOOTING
@@ -123,6 +152,24 @@ systemctl restart gunicorn nginx
 ```bash
 chown -R www-data:www-data /var/www/prisma_avaliacoes
 chmod -R 755 /var/www/prisma_avaliacoes
+
+# Permissões específicas do SQLite
+chown www-data:www-data /var/lib/sqlite/prisma_db.sqlite3
+chmod 664 /var/lib/sqlite/prisma_db.sqlite3
+```
+
+### Erro no Banco SQLite
+```bash
+# Verificar se o banco existe
+ls -la /var/lib/sqlite/prisma_db.sqlite3
+
+# Testar conexão
+sqlite3 /var/lib/sqlite/prisma_db.sqlite3 ".tables"
+
+# Recriar banco se necessário
+cd /var/www/prisma_avaliacoes
+source venv/bin/activate
+python manage.py migrate
 ```
 
 ### SSL não funciona
