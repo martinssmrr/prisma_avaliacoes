@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demonstração - Nav Links Active</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Variáveis CSS do sistema Prisma */
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --text-color: #374151;
+        }
+
+        /* Estilos aplicados */
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-color) !important;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+
+        .demo-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+
+        .color-info {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Demonstração - Nav Links com Classe Active</h1>
+        
+        <div class="demo-section">
+            <h3>Navegação Principal (Antes e Depois)</h3>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Serviços (Ativo)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contato</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="color-info">
+                ✅ Cor aplicada: <strong>#1e40af</strong> (azul padrão do sistema)<br>
+                ✅ Font-weight: <strong>600</strong> (mais destacado)<br>
+                ✅ Transição suave ao hover
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Área do Cliente - Navegação</h3>
+            <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 1rem; border-radius: 0.5rem;">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="#" style="background-color: #1e40af; border-radius: 0.5rem;">Relatórios (Ativo)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Configurações</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="color-info">
+                ✅ Background ativo: <strong>#1e40af</strong><br>
+                ✅ Texto: <strong>branco</strong><br>
+                ✅ Border-radius: <strong>0.5rem</strong>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Paleta de Cores do Sistema</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div style="background: #1e40af; height: 60px; border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <strong>Primary Color</strong><br>
+                    <code>#1e40af</code>
+                </div>
+                <div class="col-md-3">
+                    <div style="background: #3b82f6; height: 60px; border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <strong>Accent Color</strong><br>
+                    <code>#3b82f6</code>
+                </div>
+                <div class="col-md-3">
+                    <div style="background: #0f172a; height: 60px; border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <strong>Secondary Color</strong><br>
+                    <code>#0f172a</code>
+                </div>
+                <div class="col-md-3">
+                    <div style="background: #374151; height: 60px; border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <strong>Text Color</strong><br>
+                    <code>#374151</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-success mt-4">
+            <h4>✅ Mudanças Aplicadas com Sucesso!</h4>
+            <ul class="mb-0">
+                <li><strong>static/css/style.css</strong>: Adicionado estilo para <code>.nav-link.active</code></li>
+                <li><strong>static/css/admin_custom.css</strong>: Atualizada cor de fundo do admin</li>
+                <li><strong>templates/area_cliente/base.html</strong>: Atualizada navegação da área do cliente</li>
+                <li>Todas as cores agora usam o <strong>azul padrão #1e40af</strong> do sistema</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Demonstração de interatividade
+        document.querySelectorAll('.nav-link:not(.active)').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active de todos
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Adiciona active ao clicado
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

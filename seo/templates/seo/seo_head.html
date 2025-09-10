@@ -20,6 +20,8 @@ Uso: {% load seo_tags %}{% render_seo_meta %}
         <title>{{ seo_config.site_name }}</title>
         <meta name="description" content="{{ seo_config.site_description }}">
         <meta name="keywords" content="{{ seo_config.default_keywords }}">
+        {# Canonical URL padrão quando não há SEO específico #}
+        <link rel="canonical" href="{{ request.build_absolute_uri:request.get_full_path }}">
     {% endif %}
 {% endif %}
 

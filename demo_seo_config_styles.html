@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Config - Estilos Aplicados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Variáveis CSS do sistema Prisma - Aplicadas */
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --text-color: #374151;
+        }
+
+        /* Estilos aplicados no admin_custom.css */
+        .nav-pills .nav-link.active,
+        .nav-tabs .nav-link.active,
+        .breadcrumb .breadcrumb-item.active,
+        .pagination .page-item.active .page-link,
+        .btn-primary,
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #1e40af !important;
+            border-color: #1e40af !important;
+            color: white !important;
+        }
+
+        .nav-link.active,
+        .nav-item .nav-link.active,
+        .sidebar .nav-link.active {
+            background-color: #1e40af !important;
+            color: white !important;
+        }
+
+        .change-form .nav-link.active,
+        .change-form .nav-pills .nav-link.active,
+        .form-row .nav-link.active,
+        .inline-group .nav-link.active {
+            background-color: #1e40af !important;
+            color: white !important;
+            border-radius: 0.375rem;
+        }
+
+        .submit-row input[type="submit"],
+        .submit-row .default,
+        .button.default,
+        .button[type="submit"] {
+            background-color: #1e40af !important;
+            border-color: #1e40af !important;
+            color: white !important;
+        }
+
+        .nav-pills .nav-link:hover,
+        .nav-tabs .nav-link:hover,
+        .btn-primary:hover {
+            background-color: #1e3a8a !important;
+            border-color: #1e3a8a !important;
+        }
+
+        .demo-admin {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .admin-sidebar {
+            background: #343a40;
+            color: white;
+            height: 500px;
+            padding: 1rem;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 2rem;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .change-badge {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .form-demo {
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="demo-admin">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">
+                    <i class="fas fa-cog text-primary"></i>
+                    SEO Config - Estilos Azul Padrão Aplicados
+                    <span class="change-badge">ATUALIZADO</span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Simulação do Admin Sidebar -->
+            <div class="col-md-3">
+                <div class="admin-sidebar">
+                    <h5><i class="fas fa-tachometer-alt"></i> Django Admin</h5>
+                    <hr class="text-light">
+                    
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="#">
+                                <i class="fas fa-users"></i> Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" style="background-color: #1e40af !important;">
+                                <i class="fas fa-search"></i> SEO <span class="change-badge">ATIVO</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="#">
+                                <i class="fas fa-blog"></i> Artigos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="#">
+                                <i class="fas fa-chart-bar"></i> Controle
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Simulação do Conteúdo Principal -->
+            <div class="col-md-9">
+                <div class="admin-content">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">SEO</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: #1e40af !important;">
+                                <strong>SEO Config</strong>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <h2>Configuração SEO <span class="change-badge">ESTILO ATUALIZADO</span></h2>
+
+                    <!-- Formulário de Exemplo -->
+                    <div class="form-demo">
+                        <h4>Formulário com Estilos Aplicados</h4>
+                        
+                        <!-- Navegação em Tabs -->
+                        <ul class="nav nav-tabs mb-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Geral</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" style="background-color: #1e40af !important; color: white !important; border-color: #1e40af;">
+                                    Configurações <span class="change-badge">ATIVO</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Avançado</a>
+                            </li>
+                        </ul>
+
+                        <!-- Campos do Formulário -->
+                        <div class="form-group mb-3">
+                            <label class="form-label"><strong>Nome do Site:</strong></label>
+                            <input type="text" class="form-control" value="Prisma Avaliações">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label"><strong>Domínio:</strong></label>
+                            <input type="text" class="form-control" value="prismaavaliacoes.com.br">
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="submit-row mt-4">
+                            <button type="submit" class="btn btn-primary me-2" style="background-color: #1e40af !important; border-color: #1e40af !important;">
+                                <i class="fas fa-save"></i> Salvar <span class="change-badge">AZUL PADRÃO</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Navegação em Pills -->
+                    <div class="form-demo">
+                        <h4>Navegação Pills</h4>
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" style="background-color: #1e40af !important;">
+                                    SEO Meta <span class="change-badge">ATIVO</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Configurações</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Paginação -->
+                    <div class="form-demo">
+                        <h4>Paginação</h4>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Anterior</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#" style="background-color: #1e40af !important; border-color: #1e40af !important;">
+                                        2 <span class="change-badge">ATIVO</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Próximo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo das Mudanças -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <h4><i class="fas fa-check-circle"></i> Mudanças Aplicadas com Sucesso na Página SEO Config!</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Elementos Atualizados:</h6>
+                            <ul class="mb-0">
+                                <li>✅ <strong>Navegação sidebar</strong> - azul #1e40af</li>
+                                <li>✅ <strong>Tabs ativas</strong> - azul padrão do sistema</li>
+                                <li>✅ <strong>Botões primary</strong> - cor consistente</li>
+                                <li>✅ <strong>Pills de navegação</strong> - estilo unificado</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Arquivos Modificados:</h6>
+                            <ul class="mb-0">
+                                <li>📝 <code>static/css/admin_custom.css</code></li>
+                                <li>📝 <code>static/css/style.css</code></li>
+                                <li>📝 <code>templates/area_cliente/base.html</code></li>
+                                <li>🎨 Cor padrão: <strong>#1e40af</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adicionar interatividade para demonstração
+        document.querySelectorAll('.nav-link:not(.active)').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active da navegação atual
+                const navParent = this.closest('.nav');
+                navParent.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Adiciona active ao clicado
+                this.classList.add('active');
+                this.style.backgroundColor = '#1e40af';
+                this.style.color = 'white';
+            });
+        });
+
+        // Mostrar confirmação
+        setTimeout(() => {
+            console.log('✅ Estilos do SEO Config aplicados com sucesso!');
+            console.log('🎨 Cor padrão: #1e40af');
+            console.log('📱 Responsivo e acessível');
+        }, 1000);
+    </script>
+</body>
+</html>

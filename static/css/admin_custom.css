@@ -31,8 +31,38 @@ p, span, div, td, th,
 }
 
 .main-sidebar .nav-link.active {
-    background-color: #007cba !important;
+    background-color: #1e40af !important;
     color: white !important;
+}
+
+/* Estilos adicionais para navegação ativa em todo o admin */
+.nav-pills .nav-link.active,
+.nav-tabs .nav-link.active,
+.breadcrumb .breadcrumb-item.active,
+.pagination .page-item.active .page-link,
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+    color: white !important;
+}
+
+/* Links ativos em formulários e navegação secundária */
+.nav-link.active,
+.nav-item .nav-link.active,
+.sidebar .nav-link.active {
+    background-color: #1e40af !important;
+    color: white !important;
+}
+
+/* Hover states */
+.nav-pills .nav-link:hover,
+.nav-tabs .nav-link:hover,
+.btn-primary:hover {
+    background-color: #1e3a8a !important;
+    border-color: #1e3a8a !important;
 }
 
 /* Garantir fundo branco em áreas de conteúdo */
@@ -148,6 +178,51 @@ p, span, div, td, th,
 .info-box-text,
 .info-box-number {
     color: #212529 !important;
+}
+
+/* Estilos específicos para páginas de configuração SEO */
+.change-form .nav-link.active,
+.change-form .nav-pills .nav-link.active,
+.form-row .nav-link.active,
+.inline-group .nav-link.active {
+    background-color: #1e40af !important;
+    color: white !important;
+    border-radius: 0.375rem;
+}
+
+/* Botões e elementos ativos em formulários */
+.submit-row input[type="submit"],
+.submit-row .default,
+.button.default,
+.button[type="submit"] {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+    color: white !important;
+}
+
+.submit-row input[type="submit"]:hover,
+.submit-row .default:hover,
+.button.default:hover {
+    background-color: #1e3a8a !important;
+    border-color: #1e3a8a !important;
+}
+
+/* Links destacados e elementos selecionados */
+.selected,
+.highlight,
+.current,
+.active-option {
+    background-color: #1e40af !important;
+    color: white !important;
+}
+
+/* Tabs e navegação em formulários */
+.module .nav-link.active,
+.tabular .nav-link.active,
+.inline-related .nav-link.active {
+    background-color: #1e40af !important;
+    color: white !important;
+}
 }
 
 /* Garantir contraste em dropdowns */

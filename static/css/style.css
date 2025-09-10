@@ -77,6 +77,11 @@ body {
     color: var(--primary-color) !important;
 }
 
+.nav-link.active {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
 /* ==========================================================================
    SEÇÃO HERO - CONFIGURAÇÕES DE LAYOUT
    
